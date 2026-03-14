@@ -1,0 +1,58 @@
+# Google Suite — Default Configuration
+# These values are used when no config.json exists yet.
+
+# Service toggles (individually enableable)
+services:
+  gmail:
+    enabled: true
+  calendar:
+    enabled: true
+  drive:
+    enabled: true
+  contacts:
+    enabled: false
+  tasks:
+    enabled: false
+
+# OAuth2 Authentication (shared across all services)
+auth:
+  credentials_path: ""   # Path to credentials.json (or auto-detect in data/)
+
+# Gmail defaults
+gmail:
+  max_results: 20
+  include_spam_trash: false
+  exclude_labels: []
+
+# Calendar defaults
+calendar:
+  timezone: "America/New_York"
+  calendar_id: "primary"
+  max_results: 10
+  default_duration_minutes: 60
+
+# Drive defaults
+drive:
+  default_folder: ""
+  max_upload_mb: 100
+
+# Contacts defaults
+contacts:
+  max_results: 50
+
+# Tasks defaults
+tasks:
+  default_list: "@default"
+
+# Memory integration
+memory:
+  auto_save: true
+  export_format: "markdown"
+
+# Security
+security:
+  allowed_recipients: []     # Email send restriction (empty = all)
+  allowed_calendars: []      # Calendar restriction (empty = all)
+  max_attachment_size_mb: 25
+  max_attendees: 50
+  sanitize_content: true

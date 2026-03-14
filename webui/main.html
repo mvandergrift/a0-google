@@ -1,0 +1,199 @@
+<div class="google-dashboard" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 16px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color, #e0e0e0);">
+        <h3 style="margin: 0; color: #4285f4;">Google Suite</h3>
+        <span data-gg="status-badge" style="padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; background: #fce4ec; color: #c62828;">Checking...</span>
+    </div>
+
+    <div data-gg="auth-email" style="font-size: 12px; color: var(--text-secondary, #888); margin-bottom: 12px;"></div>
+
+    <!-- Service Status Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px;">
+        <div data-gg="svc-gmail" style="padding: 10px; background: var(--bg-secondary, #f8f9fa); border-radius: 6px; border-left: 3px solid #d93025;">
+            <div style="font-weight: 600; font-size: 12px; color: #d93025;">Gmail</div>
+            <div data-gg="gmail-stat" style="font-size: 11px; color: var(--text-secondary, #888);">-</div>
+        </div>
+        <div data-gg="svc-calendar" style="padding: 10px; background: var(--bg-secondary, #f8f9fa); border-radius: 6px; border-left: 3px solid #4285f4;">
+            <div style="font-weight: 600; font-size: 12px; color: #4285f4;">Calendar</div>
+            <div data-gg="calendar-stat" style="font-size: 11px; color: var(--text-secondary, #888);">-</div>
+        </div>
+        <div data-gg="svc-drive" style="padding: 10px; background: var(--bg-secondary, #f8f9fa); border-radius: 6px; border-left: 3px solid #0f9d58;">
+            <div style="font-weight: 600; font-size: 12px; color: #0f9d58;">Drive</div>
+            <div data-gg="drive-stat" style="font-size: 11px; color: var(--text-secondary, #888);">-</div>
+        </div>
+        <div data-gg="svc-contacts" style="padding: 10px; background: var(--bg-secondary, #f8f9fa); border-radius: 6px; border-left: 3px solid #f4b400;">
+            <div style="font-weight: 600; font-size: 12px; color: #f4b400;">Contacts</div>
+            <div data-gg="contacts-stat" style="font-size: 11px; color: var(--text-secondary, #888);">-</div>
+        </div>
+        <div data-gg="svc-tasks" style="padding: 10px; background: var(--bg-secondary, #f8f9fa); border-radius: 6px; border-left: 3px solid #ab47bc;">
+            <div style="font-weight: 600; font-size: 12px; color: #ab47bc;">Tasks</div>
+            <div data-gg="tasks-stat" style="font-size: 11px; color: var(--text-secondary, #888);">-</div>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+        <button data-gg="test-btn" style="background: #4285f4; color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px;">Test Connection</button>
+    </div>
+
+    <div style="padding-top: 12px; border-top: 1px solid var(--border-color, #e0e0e0);">
+        <h4 style="margin: 0 0 8px 0; color: #4285f4; font-size: 13px;">Available Tools</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #d93025;">gmail_read</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Read emails, list labels</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #d93025;">gmail_send</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Compose and send emails</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #d93025;">gmail_search</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Search with Gmail queries</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #d93025;">gmail_manage</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Archive, label, trash</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #d93025;">gmail_summarize</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">AI-powered summaries</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #d93025;">gmail_draft</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Create and manage drafts</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #4285f4;">calendar_read</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">View events and schedules</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #4285f4;">calendar_create</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Create new events</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #4285f4;">calendar_update</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Modify existing events</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #4285f4;">calendar_delete</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Cancel/delete events</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #4285f4;">calendar_availability</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Check free/busy slots</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #0f9d58;">drive_list</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">List files and folders</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #0f9d58;">drive_search</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Search file contents</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #0f9d58;">drive_upload</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Upload files to Drive</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #0f9d58;">drive_download</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Download files locally</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #0f9d58;">drive_share</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Share files with others</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #f4b400;">contacts_list</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">List contacts</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #f4b400;">contacts_search</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Search contacts</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #f4b400;">contacts_create</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Create new contacts</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #ab47bc;">tasks_list</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">View task lists and tasks</div>
+            </div>
+            <div style="padding: 8px; background: var(--bg-secondary, #f8f9fa); border-radius: 4px;">
+                <div style="font-weight: 600; font-size: 12px; color: #ab47bc;">tasks_manage</div>
+                <div style="font-size: 10px; color: var(--text-secondary, #888);">Create, complete, delete tasks</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const fetchApi = globalThis.fetchApi || fetch;
+    const API_TEST = '/api/plugins/google/google_test';
+
+    function $(sel) { return document.querySelector('[data-gg="' + sel + '"]'); }
+
+    async function testConnection() {
+        const badge = $('status-badge');
+        badge.textContent = 'Testing...';
+        badge.style.background = '#fff3e0';
+        badge.style.color = '#e65100';
+        try {
+            const resp = await fetchApi(API_TEST, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: '{}'
+            });
+            const data = await resp.json();
+            if (data.ok) {
+                badge.textContent = 'Connected';
+                badge.style.background = '#e8f5e9';
+                badge.style.color = '#2e7d32';
+                if (data.email) {
+                    $('auth-email').textContent = 'Authenticated as: ' + data.email;
+                }
+                // Update service cards
+                const svcs = data.services || {};
+                if (svcs.gmail) {
+                    $('gmail-stat').textContent = svcs.gmail.ok
+                        ? svcs.gmail.unread + ' unread'
+                        : 'Error';
+                }
+                if (svcs.calendar) {
+                    $('calendar-stat').textContent = svcs.calendar.ok
+                        ? svcs.calendar.calendars + ' calendars'
+                        : 'Error';
+                }
+                if (svcs.drive) {
+                    if (svcs.drive.ok) {
+                        const mb = Math.round(svcs.drive.usage_bytes / 1048576);
+                        $('drive-stat').textContent = mb + ' MB used';
+                    } else {
+                        $('drive-stat').textContent = 'Error';
+                    }
+                }
+                if (svcs.contacts) {
+                    $('contacts-stat').textContent = svcs.contacts.ok
+                        ? svcs.contacts.total + ' contacts'
+                        : 'Error';
+                }
+                if (svcs.tasks) {
+                    $('tasks-stat').textContent = svcs.tasks.ok
+                        ? svcs.tasks.task_lists + ' lists'
+                        : 'Error';
+                }
+            } else {
+                badge.textContent = data.error || 'Not connected';
+                badge.style.background = '#fce4ec';
+                badge.style.color = '#c62828';
+            }
+        } catch (e) {
+            badge.textContent = 'API unavailable';
+            badge.style.background = '#fce4ec';
+            badge.style.color = '#c62828';
+        }
+    }
+
+    $('test-btn').addEventListener('click', testConnection);
+    testConnection();
+})();
+</script>

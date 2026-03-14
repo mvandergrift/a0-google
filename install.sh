@@ -1,0 +1,100 @@
+#!/bin/bash
+# Install the Google Suite plugin into an Agent Zero instance.
+#
+# Usage:
+#   ./install.sh                          # Auto-detect Agent Zero root (/a0 or /git/agent-zero)
+#   ./install.sh /path/to/agent-zero      # Install to specified path
+#
+# For Docker:
+#   docker exec <container> bash -c "cd /tmp && ./install.sh"
+#   Or: docker cp google-plugin/ <container>:/a0/usr/plugins/google && \
+#       docker exec <container> ln -sf /a0/usr/plugins/google /a0/plugins/google
+
+set -eu
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Auto-detect A0 root: /a0 is the runtime copy, /git/agent-zero is the source
+if [ -n "${1:-}" ]; then
+    A0_ROOT="$1"
+elif [ -d "/a0/plugins" ]; then
+    A0_ROOT="/a0"
+elif [ -d "/git/agent-zero/plugins" ]; then
+    A0_ROOT="/git/agent-zero"
+else
+    echo "Error: Cannot find Agent Zero. Pass the path as argument."
+    exit 1
+fi
+
+PLUGIN_DIR="$A0_ROOT/usr/plugins/google"
+
+echo "=== Google Suite Plugin Installer ==="
+echo "Source:  $SCRIPT_DIR"
+echo "Target:  $PLUGIN_DIR"
+echo ""
+
+# Create target directory
+mkdir -p "$PLUGIN_DIR"
+
+# Copy plugin files
+echo "Copying plugin files..."
+cp -r "$SCRIPT_DIR/plugin.yaml" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/default_config.yaml" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/initialize.py" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/helpers" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/tools" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/prompts" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/api" "$PLUGIN_DIR/"
+cp -r "$SCRIPT_DIR/webui" "$PLUGIN_DIR/"
+
+# Copy docs and README if present
+[ -d "$SCRIPT_DIR/docs" ] && cp -r "$SCRIPT_DIR/docs" "$PLUGIN_DIR/"
+[ -f "$SCRIPT_DIR/README.md" ] && cp "$SCRIPT_DIR/README.md" "$PLUGIN_DIR/"
+[ -f "$SCRIPT_DIR/LICENSE" ] && cp "$SCRIPT_DIR/LICENSE" "$PLUGIN_DIR/"
+
+# Create data directory with restrictive permissions
+mkdir -p "$PLUGIN_DIR/data"
+chmod 700 "$PLUGIN_DIR/data"
+
+# Copy skills to usr/skills
+SKILLS_DIR="$A0_ROOT/usr/skills"
+if [ -d "$SCRIPT_DIR/skills" ] && [ "$(ls -A "$SCRIPT_DIR/skills/" 2>/dev/null)" ]; then
+    echo "Copying skills..."
+    for skill_dir in "$SCRIPT_DIR/skills"/*/; do
+        skill_name="$(basename "$skill_dir")"
+        mkdir -p "$SKILLS_DIR/$skill_name"
+        cp -r "$skill_dir"* "$SKILLS_DIR/$skill_name/"
+    done
+fi
+
+# Run initialization (install Python deps)
+echo "Installing dependencies..."
+/opt/venv-a0/bin/python3 "$PLUGIN_DIR/initialize.py" 2>/dev/null || python3 "$PLUGIN_DIR/initialize.py" || python "$PLUGIN_DIR/initialize.py"
+
+# Enable plugin
+touch "$PLUGIN_DIR/.toggle-1"
+
+# Create symlink so 'from plugins.google.helpers...' imports work
+SYMLINK="$A0_ROOT/plugins/google"
+if [ ! -e "$SYMLINK" ]; then
+    ln -sf "$PLUGIN_DIR" "$SYMLINK"
+    echo "Created symlink: $SYMLINK -> $PLUGIN_DIR"
+fi
+
+# If /a0 is a runtime copy of /git/agent-zero, also install there
+if [ "$A0_ROOT" = "/a0" ] && [ -d "/git/agent-zero/usr" ]; then
+    GIT_PLUGIN="/git/agent-zero/usr/plugins/google"
+    mkdir -p "$(dirname "$GIT_PLUGIN")"
+    cp -r "$PLUGIN_DIR" "$GIT_PLUGIN" 2>/dev/null || true
+fi
+
+echo ""
+echo "=== Installation complete ==="
+echo "Plugin installed to: $PLUGIN_DIR"
+echo ""
+echo "Next steps:"
+echo "  1. Upload credentials.json in the Google plugin settings (WebUI)"
+echo "     Download from Google Cloud Console > APIs & Services > Credentials"
+echo "  2. Complete OAuth flow to authorize access"
+echo "  3. Restart Agent Zero to load the plugin"
+echo "  4. Ask the agent: 'Read my recent emails' or 'What's on my calendar today?'"

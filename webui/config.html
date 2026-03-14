@@ -1,0 +1,346 @@
+<div class="google-config" id="google-config-root" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 16px;">
+    <h3 style="color: #4285f4; margin: 0 0 16px 0;">Google Suite Settings</h3>
+
+    <!-- Tab Navigation -->
+    <div style="display: flex; gap: 0; border-bottom: 2px solid var(--border-color, #e0e0e0); margin-bottom: 16px;">
+        <button data-gg="tab-auth" class="gg-tab active" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: #4285f4; border-bottom: 2px solid #4285f4; margin-bottom: -2px;">Auth</button>
+        <button data-gg="tab-services" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Services</button>
+        <button data-gg="tab-gmail" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Gmail</button>
+        <button data-gg="tab-calendar" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Calendar</button>
+        <button data-gg="tab-drive" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Drive</button>
+        <button data-gg="tab-security" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Security</button>
+    </div>
+
+    <!-- Auth Tab -->
+    <div data-gg="panel-auth" class="gg-panel" style="">
+        <div style="margin-bottom: 16px; padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">OAuth2 Authentication</div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span style="font-size: 12px; font-weight: 500;">Status:</span>
+                <span data-gg="auth-status" style="padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; background: #f5f5f5; color: #888;">Checking...</span>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary, #666); margin-bottom: 6px;">Step 1: Upload credentials.json</div>
+                <div style="font-size: 10px; color: var(--text-tertiary, #999); margin-bottom: 6px;">Download OAuth client credentials from Google Cloud Console &gt; APIs &amp; Services &gt; Credentials.</div>
+                <textarea data-gg="credentials-json" rows="4" placeholder='Paste the contents of your credentials.json file here...'
+                          style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
+                <button data-gg="upload-creds-btn" style="background: #4285f4; color: #fff; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; margin-top: 4px;">Upload Credentials</button>
+                <span data-gg="upload-status" style="margin-left: 8px; font-size: 11px;"></span>
+            </div>
+
+            <div style="margin-bottom: 8px;">
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary, #666); margin-bottom: 6px;">Step 2: Authorize</div>
+                <button data-gg="auth-btn" style="background: #1a73e8; color: #fff; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px;">Get Authorization URL</button>
+                <div data-gg="auth-url-box" style="display: none; margin-top: 8px; padding: 8px; background: var(--bg-secondary, #f5f5f5); border-radius: 4px;">
+                    <div style="font-size: 10px; color: var(--text-secondary, #888); margin-bottom: 4px;">Open this URL in your browser and authorize:</div>
+                    <input data-gg="auth-url" type="text" readonly style="width: 100%; padding: 4px 6px; border: 1px solid var(--border-color, #ddd); border-radius: 3px; font-size: 10px; font-family: monospace; box-sizing: border-box;">
+                    <button data-gg="copy-url-btn" style="background: var(--bg-secondary, #e0e0e0); color: var(--text-primary, #333); border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; margin-top: 4px;">Copy URL</button>
+                </div>
+            </div>
+
+            <div>
+                <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary, #666); margin-bottom: 6px;">Step 3: Enter Authorization Code</div>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <input data-gg="auth-code" type="text" placeholder="Paste authorization code here"
+                           style="flex: 1; padding: 5px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box;">
+                    <button data-gg="submit-code-btn" style="background: #1a73e8; color: #fff; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; white-space: nowrap;">Submit Code</button>
+                </div>
+                <span data-gg="code-status" style="font-size: 11px; margin-top: 4px; display: inline-block;"></span>
+            </div>
+        </div>
+
+        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Active Scopes</div>
+            <div data-gg="scope-list" style="font-size: 11px; font-family: monospace; color: var(--text-secondary, #888);">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Services Tab -->
+    <div data-gg="panel-services" class="gg-panel" style="display: none;">
+        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Enable/Disable Services</div>
+            <div style="font-size: 10px; color: var(--text-tertiary, #999); margin-bottom: 10px;">Changing services may require re-authorization to request new OAuth scopes.</div>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
+                <input type="checkbox" data-gg="svc-gmail-toggle" checked> <span style="font-weight: 600; color: #d93025;">Gmail</span> — Read, send, search, manage emails
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
+                <input type="checkbox" data-gg="svc-calendar-toggle" checked> <span style="font-weight: 600; color: #4285f4;">Calendar</span> — Events, scheduling, availability
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
+                <input type="checkbox" data-gg="svc-drive-toggle" checked> <span style="font-weight: 600; color: #0f9d58;">Drive</span> — Files, folders, upload, download
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
+                <input type="checkbox" data-gg="svc-contacts-toggle"> <span style="font-weight: 600; color: #f4b400;">Contacts</span> — People, search, create
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
+                <input type="checkbox" data-gg="svc-tasks-toggle"> <span style="font-weight: 600; color: #ab47bc;">Tasks</span> — Task lists, to-do items
+            </label>
+        </div>
+    </div>
+
+    <!-- Gmail Tab -->
+    <div data-gg="panel-gmail" class="gg-panel" style="display: none;">
+        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Gmail Settings</div>
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Max Results per Query</label>
+            <input type="number" data-gg="gmail-max-results" value="20" min="1" max="100" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 8px; cursor: pointer;">
+                <input type="checkbox" data-gg="gmail-include-spam"> Include spam and trash in results
+            </label>
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 12px; margin-bottom: 4px;">Excluded Labels (one per line)</label>
+            <textarea data-gg="gmail-exclude-labels" rows="2" placeholder="SPAM&#10;TRASH" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box; resize: vertical;"></textarea>
+        </div>
+    </div>
+
+    <!-- Calendar Tab -->
+    <div data-gg="panel-calendar" class="gg-panel" style="display: none;">
+        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Calendar Settings</div>
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Timezone</label>
+            <select data-gg="cal-timezone" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                <option value="America/New_York">America/New_York (Eastern)</option>
+                <option value="America/Chicago">America/Chicago (Central)</option>
+                <option value="America/Denver">America/Denver (Mountain)</option>
+                <option value="America/Los_Angeles">America/Los_Angeles (Pacific)</option>
+                <option value="America/Anchorage">America/Anchorage (Alaska)</option>
+                <option value="Pacific/Honolulu">Pacific/Honolulu (Hawaii)</option>
+                <option value="Europe/London">Europe/London (GMT)</option>
+                <option value="Europe/Berlin">Europe/Berlin (CET)</option>
+                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+                <option value="Australia/Sydney">Australia/Sydney (AEST)</option>
+                <option value="UTC">UTC</option>
+            </select>
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Default Calendar ID</label>
+            <input data-gg="cal-id" type="text" value="primary" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Max Results</label>
+                    <input data-gg="cal-max-results" type="number" value="10" min="1" max="100" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Default Duration (min)</label>
+                    <input data-gg="cal-duration" type="number" value="60" min="5" max="480" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drive Tab -->
+    <div data-gg="panel-drive" class="gg-panel" style="display: none;">
+        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Drive Settings</div>
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Default Folder ID</label>
+            <input data-gg="drive-folder" type="text" placeholder="Leave empty for root" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Max Upload Size (MB)</label>
+            <input data-gg="drive-max-upload" type="number" value="100" min="1" max="5120" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
+        </div>
+    </div>
+
+    <!-- Security Tab -->
+    <div data-gg="panel-security" class="gg-panel" style="display: none;">
+        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Security Settings</div>
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Max Attachment Size (MB)</label>
+            <input type="number" data-gg="sec-max-attach" value="25" min="1" max="25" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Max Attendees per Event</label>
+            <input type="number" data-gg="sec-max-attendees" value="50" min="1" max="200" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Allowed Recipients (one per line)</label>
+            <textarea data-gg="sec-allowed-recipients" rows="3" placeholder="Leave empty to allow all recipients" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
+            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Allowed Calendars (one per line)</label>
+            <textarea data-gg="sec-allowed-calendars" rows="2" placeholder="Leave empty to allow all calendars" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 8px; cursor: pointer;">
+                <input type="checkbox" data-gg="sec-sanitize" checked> Sanitize email content (strip tracking pixels)
+            </label>
+        </div>
+    </div>
+
+    <div style="margin-top: 16px;">
+        <button data-gg="save-btn" style="background: #4285f4; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">Save Settings</button>
+        <span data-gg="save-status" style="margin-left: 10px; font-size: 12px;"></span>
+        <div style="font-size: 10px; color: var(--text-tertiary, #999); margin-top: 8px;">Use this button (not the outer framework Save) to save Google settings.</div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const fetchApi = globalThis.fetchApi || fetch;
+    const API_CONFIG = '/api/plugins/google/google_config_api';
+    const root = document.querySelector('#google-config-root') || document.querySelector('.google-config') || document.currentScript?.parentElement;
+    if (!root) { console.error('[Google Config] Cannot find config root element'); return; }
+
+    function el(key) { return root.querySelector('[data-gg="' + key + '"]'); }
+
+    // Tab switching
+    const tabNames = ['auth', 'services', 'gmail', 'calendar', 'drive', 'security'];
+    tabNames.forEach(function(name) {
+        var btn = el('tab-' + name);
+        if (btn) btn.addEventListener('click', function() {
+            tabNames.forEach(function(n) {
+                var b = el('tab-' + n), p = el('panel-' + n);
+                if (b) { b.style.color = 'var(--text-secondary, #888)'; b.style.borderBottomColor = 'transparent'; }
+                if (p) p.style.display = 'none';
+            });
+            btn.style.color = '#4285f4';
+            btn.style.borderBottomColor = '#4285f4';
+            var panel = el('panel-' + name);
+            if (panel) panel.style.display = '';
+        });
+    });
+
+    async function loadConfig() {
+        try {
+            const resp = await fetchApi(API_CONFIG, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({action: 'get'})
+            });
+            const c = await resp.json();
+
+            // Auth status
+            const authBadge = el('auth-status');
+            if (c._auth_status?.authenticated) {
+                authBadge.textContent = 'Connected as ' + c._auth_status.email;
+                authBadge.style.background = '#e8f5e9'; authBadge.style.color = '#2e7d32';
+            } else {
+                authBadge.textContent = c._has_credentials ? 'Not authorized' : 'No credentials';
+                authBadge.style.background = '#fce4ec'; authBadge.style.color = '#c62828';
+            }
+
+            // Enabled services
+            var svcs = c._enabled_services || [];
+            var scopeHtml = svcs.length ? svcs.join(', ') : 'None enabled';
+            el('scope-list').textContent = scopeHtml;
+
+            // Service toggles
+            var svcConfig = c.services || {};
+            el('svc-gmail-toggle').checked = svcConfig.gmail?.enabled !== false;
+            el('svc-calendar-toggle').checked = svcConfig.calendar?.enabled !== false;
+            el('svc-drive-toggle').checked = svcConfig.drive?.enabled !== false;
+            el('svc-contacts-toggle').checked = svcConfig.contacts?.enabled === true;
+            el('svc-tasks-toggle').checked = svcConfig.tasks?.enabled === true;
+
+            // Gmail settings
+            var gmail = c.gmail || {};
+            el('gmail-max-results').value = gmail.max_results || 20;
+            el('gmail-include-spam').checked = gmail.include_spam_trash === true;
+            if (gmail.exclude_labels?.length) el('gmail-exclude-labels').value = gmail.exclude_labels.join('\n');
+
+            // Calendar settings
+            var cal = c.calendar || {};
+            if (cal.timezone) el('cal-timezone').value = cal.timezone;
+            if (cal.calendar_id) el('cal-id').value = cal.calendar_id;
+            if (cal.max_results) el('cal-max-results').value = cal.max_results;
+            if (cal.default_duration_minutes) el('cal-duration').value = cal.default_duration_minutes;
+
+            // Drive settings
+            var drive = c.drive || {};
+            if (drive.default_folder) el('drive-folder').value = drive.default_folder;
+            if (drive.max_upload_mb) el('drive-max-upload').value = drive.max_upload_mb;
+
+            // Security
+            var sec = c.security || {};
+            el('sec-max-attach').value = sec.max_attachment_size_mb || 25;
+            el('sec-max-attendees').value = sec.max_attendees || 50;
+            if (sec.allowed_recipients?.length) el('sec-allowed-recipients').value = sec.allowed_recipients.join('\n');
+            if (sec.allowed_calendars?.length) el('sec-allowed-calendars').value = sec.allowed_calendars.join('\n');
+            el('sec-sanitize').checked = sec.sanitize_content !== false;
+        } catch (e) {
+            console.error('[Google Config] Load error:', e);
+        }
+    }
+
+    async function saveConfig() {
+        var status = el('save-status');
+        status.textContent = 'Saving...'; status.style.color = '#e65100';
+        var config = {
+            action: 'set',
+            services: {
+                gmail: { enabled: el('svc-gmail-toggle')?.checked ?? true },
+                calendar: { enabled: el('svc-calendar-toggle')?.checked ?? true },
+                drive: { enabled: el('svc-drive-toggle')?.checked ?? true },
+                contacts: { enabled: el('svc-contacts-toggle')?.checked ?? false },
+                tasks: { enabled: el('svc-tasks-toggle')?.checked ?? false },
+            },
+            gmail: {
+                max_results: parseInt(el('gmail-max-results')?.value) || 20,
+                include_spam_trash: el('gmail-include-spam')?.checked ?? false,
+                exclude_labels: (el('gmail-exclude-labels')?.value || '').split('\n').map(function(s){return s.trim()}).filter(Boolean),
+            },
+            calendar: {
+                timezone: el('cal-timezone')?.value || 'America/New_York',
+                calendar_id: el('cal-id')?.value || 'primary',
+                max_results: parseInt(el('cal-max-results')?.value) || 10,
+                default_duration_minutes: parseInt(el('cal-duration')?.value) || 60,
+            },
+            drive: {
+                default_folder: el('drive-folder')?.value || '',
+                max_upload_mb: parseInt(el('drive-max-upload')?.value) || 100,
+            },
+            memory: { auto_save: true, export_format: 'markdown' },
+            security: {
+                max_attachment_size_mb: parseInt(el('sec-max-attach')?.value) || 25,
+                max_attendees: parseInt(el('sec-max-attendees')?.value) || 50,
+                allowed_recipients: (el('sec-allowed-recipients')?.value || '').split('\n').map(function(s){return s.trim()}).filter(Boolean),
+                allowed_calendars: (el('sec-allowed-calendars')?.value || '').split('\n').map(function(s){return s.trim()}).filter(Boolean),
+                sanitize_content: el('sec-sanitize')?.checked ?? true,
+            },
+        };
+        try {
+            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(config) });
+            var result = await resp.json();
+            if (result.ok) { status.textContent = 'Saved!'; status.style.color = '#2e7d32'; }
+            else { status.textContent = 'Error: ' + (result.error || 'Unknown'); status.style.color = '#c62828'; }
+        } catch (e) { status.textContent = 'Network error: ' + e.message; status.style.color = '#c62828'; }
+        setTimeout(function() { status.textContent = ''; }, 5000);
+    }
+
+    // Upload credentials
+    el('upload-creds-btn')?.addEventListener('click', async function() {
+        var status = el('upload-status');
+        var credsText = el('credentials-json')?.value || '';
+        if (!credsText.trim()) { status.textContent = 'Paste credentials.json first'; status.style.color = '#c62828'; return; }
+        try {
+            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'upload_credentials', credentials: credsText}) });
+            var result = await resp.json();
+            if (result.ok) { status.textContent = 'Uploaded!'; status.style.color = '#2e7d32'; el('credentials-json').value = ''; loadConfig(); }
+            else { status.textContent = result.error || 'Upload failed'; status.style.color = '#c62828'; }
+        } catch (e) { status.textContent = 'Error: ' + e.message; status.style.color = '#c62828'; }
+        setTimeout(function() { status.textContent = ''; }, 5000);
+    });
+
+    // Auth URL
+    el('auth-btn')?.addEventListener('click', async function() {
+        try {
+            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'auth_url'}) });
+            var result = await resp.json();
+            if (result.ok && result.auth_url) { el('auth-url').value = result.auth_url; el('auth-url-box').style.display = 'block'; }
+            else { alert(result.error || 'Failed to generate auth URL'); }
+        } catch (e) { alert('Error: ' + e.message); }
+    });
+
+    // Copy URL
+    el('copy-url-btn')?.addEventListener('click', function() {
+        var url = el('auth-url')?.value;
+        if (url) { navigator.clipboard.writeText(url).then(function() { el('copy-url-btn').textContent = 'Copied!'; setTimeout(function() { el('copy-url-btn').textContent = 'Copy URL'; }, 2000); }); }
+    });
+
+    // Submit auth code
+    el('submit-code-btn')?.addEventListener('click', async function() {
+        var status = el('code-status');
+        var code = el('auth-code')?.value || '';
+        if (!code.trim()) { status.textContent = 'Enter the authorization code'; status.style.color = '#c62828'; return; }
+        status.textContent = 'Authenticating...'; status.style.color = '#e65100';
+        try {
+            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'auth_callback', code: code.trim()}) });
+            var result = await resp.json();
+            if (result.ok) { status.textContent = 'Authenticated as ' + result.email; status.style.color = '#2e7d32'; el('auth-code').value = ''; loadConfig(); }
+            else { status.textContent = result.error || 'Auth failed'; status.style.color = '#c62828'; }
+        } catch (e) { status.textContent = 'Error: ' + e.message; status.style.color = '#c62828'; }
+    });
+
+    el('save-btn')?.addEventListener('click', saveConfig);
+    loadConfig();
+})();
+</script>

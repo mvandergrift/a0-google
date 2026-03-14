@@ -1,0 +1,334 @@
+"""Shared Google OAuth2 authentication module.
+
+Provides unified credential management for all Google services
+(Gmail, Calendar, Drive, Contacts, Tasks). Single credentials.json
+and token.json with dynamically assembled scopes.
+"""
+
+import json
+import logging
+import os
+from pathlib import Path
+from typing import Optional
+
+logger = logging.getLogger("google_auth")
+
+# ---------------------------------------------------------------------------
+# Scope registry — maps service names to their required OAuth scopes
+# ---------------------------------------------------------------------------
+SERVICE_SCOPES = {
+    "gmail": [
+        "https://www.googleapis.com/auth/gmail.readonly",
+        "https://www.googleapis.com/auth/gmail.send",
+        "https://www.googleapis.com/auth/gmail.modify",
+    ],
+    "calendar": [
+        "https://www.googleapis.com/auth/calendar",
+        "https://www.googleapis.com/auth/calendar.events",
+    ],
+    "drive": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive.readonly",
+    ],
+    "contacts": [
+        "https://www.googleapis.com/auth/contacts.readonly",
+        "https://www.googleapis.com/auth/contacts",
+    ],
+    "tasks": [
+        "https://www.googleapis.com/auth/tasks",
+    ],
+}
+
+# Service name → (API name, API version)
+SERVICE_API = {
+    "gmail": ("gmail", "v1"),
+    "calendar": ("calendar", "v3"),
+    "drive": ("drive", "v3"),
+    "contacts": ("people", "v1"),
+    "tasks": ("tasks", "v1"),
+}
+
+# Default enabled services
+DEFAULT_ENABLED = {"gmail", "calendar", "drive"}
+
+
+class GoogleAuthError(Exception):
+    """Raised when OAuth2 authentication fails."""
+    pass
+
+
+class GoogleAPIError(Exception):
+    """Raised when a Google API call fails."""
+    def __init__(self, error: str, status: int = 0):
+        self.status = status
+        super().__init__(error)
+
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+
+def get_google_config(agent=None) -> dict:
+    """Load plugin configuration through the A0 framework."""
+    try:
+        from helpers import plugins
+        config = plugins.get_plugin_config("google", agent=agent) or {}
+    except Exception:
+        config = {}
+    return config
+
+
+def get_enabled_services(config: dict) -> set:
+    """Return the set of enabled service names."""
+    services = config.get("services", {})
+    if not services:
+        return DEFAULT_ENABLED.copy()
+    return {
+        name for name, svc in services.items()
+        if svc.get("enabled", name in DEFAULT_ENABLED)
+    }
+
+
+def is_service_enabled(service_name: str, agent=None) -> bool:
+    """Check if a Google service is enabled in plugin config."""
+    config = get_google_config(agent)
+    return service_name in get_enabled_services(config)
+
+
+def get_scopes(config: dict) -> list:
+    """Assemble OAuth scopes from enabled services."""
+    enabled = get_enabled_services(config)
+    scopes = []
+    for service in enabled:
+        for scope in SERVICE_SCOPES.get(service, []):
+            if scope not in scopes:
+                scopes.append(scope)
+    return scopes
+
+
+# ---------------------------------------------------------------------------
+# File paths
+# ---------------------------------------------------------------------------
+
+def _data_dir(config: dict) -> Path:
+    """Resolve the data directory for credential storage."""
+    candidates = [
+        Path(__file__).parent.parent / "data",
+        Path("/a0/usr/plugins/google/data"),
+        Path("/a0/plugins/google/data"),
+        Path("/git/agent-zero/usr/plugins/google/data"),
+    ]
+    for p in candidates:
+        if p.exists():
+            return p
+    # Create the first candidate
+    candidates[0].mkdir(parents=True, exist_ok=True)
+    os.chmod(str(candidates[0]), 0o700)
+    return candidates[0]
+
+
+def _credentials_path(config: dict) -> Path:
+    """Locate credentials.json."""
+    explicit = config.get("auth", {}).get("credentials_path", "")
+    if explicit and Path(explicit).exists():
+        return Path(explicit)
+    data = _data_dir(config)
+    return data / "credentials.json"
+
+
+def _token_path(config: dict) -> Path:
+    """Locate token.json."""
+    return _data_dir(config) / "token.json"
+
+
+# ---------------------------------------------------------------------------
+# OAuth2 Authentication
+# ---------------------------------------------------------------------------
+
+def get_credentials(config: dict):
+    """Load or refresh OAuth2 credentials.
+
+    Returns a google.oauth2.credentials.Credentials object or raises GoogleAuthError.
+    """
+    from google.oauth2.credentials import Credentials
+    from google.auth.transport.requests import Request
+
+    token_file = _token_path(config)
+    scopes = get_scopes(config)
+
+    creds = None
+    if token_file.exists():
+        try:
+            creds = Credentials.from_authorized_user_file(str(token_file), scopes)
+        except Exception:
+            creds = None
+
+    if creds and creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+            _save_token(creds, config)
+        except Exception as e:
+            raise GoogleAuthError(
+                f"Token refresh failed: {e}. Re-authorize via plugin settings."
+            )
+
+    if not creds or not creds.valid:
+        raise GoogleAuthError(
+            "Not authenticated. Complete OAuth flow via plugin settings."
+        )
+
+    return creds
+
+
+def _save_token(creds, config: dict):
+    """Persist token.json with restrictive permissions."""
+    token_file = _token_path(config)
+    token_file.parent.mkdir(parents=True, exist_ok=True)
+    tmp = token_file.with_suffix(".tmp")
+    try:
+        fd = os.open(str(tmp), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w") as f:
+            f.write(creds.to_json())
+        os.replace(str(tmp), str(token_file))
+    except Exception:
+        try:
+            tmp.unlink(missing_ok=True)
+        except Exception:
+            pass
+        with open(str(token_file), "w") as f:
+            f.write(creds.to_json())
+        try:
+            os.chmod(str(token_file), 0o600)
+        except OSError:
+            pass
+
+
+def _pkce_path(config: dict) -> Path:
+    """Temp file to persist PKCE code_verifier between auth URL and token exchange."""
+    return _data_dir(config) / ".pkce_verifier"
+
+
+def generate_auth_url(config: dict) -> str:
+    """Generate the OAuth2 authorization URL for the user to visit."""
+    from google_auth_oauthlib.flow import Flow
+
+    creds_file = _credentials_path(config)
+    if not creds_file.exists():
+        raise GoogleAuthError(
+            "credentials.json not found. Upload it via plugin settings or "
+            f"place it in {creds_file.parent}/"
+        )
+
+    scopes = get_scopes(config)
+    flow = Flow.from_client_secrets_file(
+        str(creds_file),
+        scopes=scopes,
+        redirect_uri="urn:ietf:wg:oauth:2.0:oob",
+    )
+    auth_url, _ = flow.authorization_url(
+        access_type="offline",
+        include_granted_scopes="true",
+        prompt="consent",
+    )
+
+    # Persist PKCE code_verifier so exchange_auth_code() can use it
+    code_verifier = getattr(flow, "code_verifier", None)
+    if code_verifier:
+        pkce_file = _pkce_path(config)
+        try:
+            fd = os.open(str(pkce_file), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+            with os.fdopen(fd, "w") as f:
+                f.write(code_verifier)
+        except Exception:
+            pkce_file.write_text(code_verifier)
+
+    return auth_url
+
+
+def exchange_auth_code(config: dict, code: str):
+    """Exchange an authorization code for credentials and save the token."""
+    from google_auth_oauthlib.flow import Flow
+
+    creds_file = _credentials_path(config)
+    if not creds_file.exists():
+        raise GoogleAuthError("credentials.json not found.")
+
+    scopes = get_scopes(config)
+    flow = Flow.from_client_secrets_file(
+        str(creds_file),
+        scopes=scopes,
+        redirect_uri="urn:ietf:wg:oauth:2.0:oob",
+    )
+
+    # Restore PKCE code_verifier from generate_auth_url()
+    pkce_file = _pkce_path(config)
+    if pkce_file.exists():
+        try:
+            flow.code_verifier = pkce_file.read_text().strip()
+        except Exception:
+            pass
+        finally:
+            try:
+                pkce_file.unlink(missing_ok=True)
+            except Exception:
+                pass
+
+    flow.fetch_token(code=code)
+    creds = flow.credentials
+    _save_token(creds, config)
+    return creds
+
+
+def is_authenticated(config: dict) -> tuple[bool, str]:
+    """Check if valid credentials exist. Returns (authenticated, email_or_error)."""
+    try:
+        creds = get_credentials(config)
+        service = build_service("gmail", config, creds=creds)
+        profile = service.users().getProfile(userId="me").execute()
+        return True, profile.get("emailAddress", "unknown")
+    except GoogleAuthError as e:
+        return False, str(e)
+    except Exception as e:
+        return False, f"Error: {e}"
+
+
+# ---------------------------------------------------------------------------
+# Service builders
+# ---------------------------------------------------------------------------
+
+def build_service(service_name: str, config: dict, creds=None):
+    """Build a Google API service object for the given service."""
+    from googleapiclient.discovery import build
+
+    if creds is None:
+        creds = get_credentials(config)
+
+    api_name, api_version = SERVICE_API.get(service_name, (service_name, "v1"))
+    return build(api_name, api_version, credentials=creds, cache_discovery=False)
+
+
+# ---------------------------------------------------------------------------
+# Secure File I/O
+# ---------------------------------------------------------------------------
+
+def secure_write_json(path, data, indent: int = 2):
+    """Write JSON to a file with restrictive permissions (0o600) and atomic rename."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_suffix(".tmp")
+    try:
+        fd = os.open(str(tmp_path), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w") as f:
+            json.dump(data, f, indent=indent)
+        os.replace(str(tmp_path), str(path))
+    except Exception:
+        try:
+            tmp_path.unlink(missing_ok=True)
+        except Exception:
+            pass
+        with open(path, "w") as f:
+            json.dump(data, f, indent=indent)
+        try:
+            os.chmod(str(path), 0o600)
+        except OSError:
+            pass
