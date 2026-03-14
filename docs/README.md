@@ -36,6 +36,19 @@ Unified Google integration for Agent Zero — Gmail, Calendar, Drive, Contacts, 
 | `tasks_list` | Tasks | List task lists and tasks with filtering |
 | `tasks_manage` | Tasks | Create, update, complete, and delete tasks |
 
+## Skills (6)
+
+Semantic workflow guides that activate when user intent matches trigger phrases.
+
+| Skill | Category | Description |
+|-------|----------|-------------|
+| `google-communicate` | Communication | Email composition, drafts, and contact lookup |
+| `google-research` | Research | Inbox triage, email search, thread summarization |
+| `google-schedule` | Productivity | Calendar viewing, event creation, availability check |
+| `google-drive` | Productivity | File search, upload, download, and sharing |
+| `google-daily-briefing` | Productivity | Cross-service morning briefing (inbox + calendar + tasks) |
+| `google-tasks` | Productivity | Task list management and to-do tracking |
+
 ## API Endpoints
 
 | Endpoint | Method | Description |

@@ -660,6 +660,86 @@ else
 fi
 
 # ============================================================
+# T11: Skills
+# ============================================================
+section "T11: Skills"
+
+EXPECTED_SKILLS="google-communicate google-daily-briefing google-drive google-research google-schedule google-tasks"
+
+# T11.1: All 6 skill directories exist
+SKILL_COUNT=$(docker exec "$CONTAINER" bash -c 'ls -d /a0/usr/plugins/google/skills/google-*/ 2>/dev/null | wc -l')
+if [ "$SKILL_COUNT" -eq 6 ]; then
+    pass "T11.1 All 6 skill directories exist"
+else
+    fail "T11.1 Skill directories" "Expected 6, found $SKILL_COUNT"
+fi
+
+# T11.2: Every skill has a SKILL.md file
+MISSING_SKILLS=""
+for skill in $EXPECTED_SKILLS; do
+    if ! docker exec "$CONTAINER" test -f "/a0/usr/plugins/google/skills/$skill/SKILL.md"; then
+        MISSING_SKILLS="$MISSING_SKILLS $skill"
+    fi
+done
+if [ -z "$MISSING_SKILLS" ]; then
+    pass "T11.2 Every skill has a SKILL.md file"
+else
+    fail "T11.2 Missing SKILL.md" "Missing:$MISSING_SKILLS"
+fi
+
+# T11.3: Every SKILL.md has valid YAML frontmatter (starts with ---)
+BAD_FRONTMATTER=""
+for skill in $EXPECTED_SKILLS; do
+    FIRST_LINE=$(docker exec "$CONTAINER" head -1 "/a0/usr/plugins/google/skills/$skill/SKILL.md" 2>/dev/null)
+    if [ "$FIRST_LINE" != "---" ]; then
+        BAD_FRONTMATTER="$BAD_FRONTMATTER $skill"
+    fi
+done
+if [ -z "$BAD_FRONTMATTER" ]; then
+    pass "T11.3 All SKILL.md files have YAML frontmatter"
+else
+    fail "T11.3 Bad frontmatter" "Missing ---:$BAD_FRONTMATTER"
+fi
+
+# T11.4: Every SKILL.md has required fields (name, triggers, allowed_tools)
+MISSING_FIELDS=""
+for skill in $EXPECTED_SKILLS; do
+    FILE="/a0/usr/plugins/google/skills/$skill/SKILL.md"
+    for field in "name:" "triggers:" "allowed_tools:"; do
+        if ! docker exec "$CONTAINER" grep -q "$field" "$FILE" 2>/dev/null; then
+            MISSING_FIELDS="$MISSING_FIELDS $skill/$field"
+        fi
+    done
+done
+if [ -z "$MISSING_FIELDS" ]; then
+    pass "T11.4 All SKILL.md files have required fields (name, triggers, allowed_tools)"
+else
+    fail "T11.4 Missing fields" "$MISSING_FIELDS"
+fi
+
+# T11.5: All allowed_tools reference real tools
+BAD_TOOLS=$(docker exec "$CONTAINER" bash -c '
+REAL_TOOLS=$(ls /a0/usr/plugins/google/tools/*.py 2>/dev/null | while read f; do basename "$f" .py; done)
+BAD=""
+for skill in google-communicate google-daily-briefing google-drive google-research google-schedule google-tasks; do
+    FILE="/a0/usr/plugins/google/skills/$skill/SKILL.md"
+    ALLOWED=$(sed -n "/^allowed_tools:/,/^[a-z]/p" "$FILE" 2>/dev/null | grep "  - " | sed "s/  - //" | tr -d "\"" | tr -d "\r")
+    for tool in $ALLOWED; do
+        tool=$(echo "$tool" | tr -d " ")
+        if ! echo "$REAL_TOOLS" | grep -q "^${tool}$"; then
+            BAD="$BAD $skill->$tool"
+        fi
+    done
+done
+echo "$BAD"
+')
+if [ -z "$(echo "$BAD_TOOLS" | tr -d ' ')" ]; then
+    pass "T11.5 All allowed_tools reference existing tool files"
+else
+    fail "T11.5 Invalid tool references" "$BAD_TOOLS"
+fi
+
+# ============================================================
 # Summary
 # ============================================================
 echo ""

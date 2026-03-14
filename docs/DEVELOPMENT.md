@@ -43,6 +43,13 @@ a0-google/
 ├── prompts/                 # 21 tool prompts + 1 group prompt
 │   ├── tool_group.md        # Group context for all Google tools
 │   └── agent.system.tool.<name>.md  # Per-tool prompt with JSON examples
+├── skills/                  # 6 semantic workflow skills
+│   ├── google-communicate/  # Email send/draft with contact lookup
+│   ├── google-research/     # Inbox triage, search, summarization
+│   ├── google-schedule/     # Calendar view, create, availability
+│   ├── google-drive/        # File search, upload, download, share
+│   ├── google-daily-briefing/  # Cross-service morning overview
+│   └── google-tasks/        # Task list management
 ├── api/
 │   ├── google_config_api.py # Config get/set, OAuth flow, credentials upload
 │   └── google_test.py       # Connection test endpoint
@@ -181,6 +188,52 @@ statusEl.textContent = 'Connected';
 - **Atomic writes**: `secure_write_json()` uses `os.open(0o600)` + `os.replace()` for token/config
 - **CSRF**: Every API handler returns `requires_csrf() -> True`
 - **Content limits**: `MAX_EMAIL_BODY=50000`, `MAX_SUBJECT=500`, `MAX_BULK_CHARS=200000`
+
+## Skills
+
+Skills are Markdown-based workflow guides stored in `skills/<name>/SKILL.md`. They are **not Python code** — they teach the agent how to chain tools together for multi-step tasks.
+
+### Skill Structure
+```
+skills/google-<name>/
+└── SKILL.md          # YAML frontmatter + workflow markdown
+```
+
+### SKILL.md Frontmatter
+```yaml
+---
+name: "google-<name>"
+description: "What this skill does"
+version: "1.0.0"
+author: "AgentZero Google Suite Plugin"
+license: "MIT"
+tags: ["google", "relevant", "tags"]
+triggers:
+  - "natural language phrase that activates this skill"
+  - "another trigger phrase"
+allowed_tools:
+  - tool_name_1
+  - tool_name_2
+metadata:
+  complexity: "basic"        # basic, intermediate, advanced
+  category: "communication"  # communication, research, productivity, administration
+---
+```
+
+### How Skills Work
+- **Triggers** are natural language phrases — when a user's message matches, the framework injects the SKILL.md into the agent's context
+- **allowed_tools** tells the agent which tools are relevant for this workflow
+- The body contains step-by-step instructions with JSON tool call examples
+- Skills are installed to `$A0_ROOT/usr/skills/` (shared across all plugins)
+
+### Adding a New Skill
+
+1. Create `skills/google-<name>/SKILL.md` with frontmatter and workflow
+2. Add 4-8 trigger phrases that cover common ways users would request this
+3. List the tools the skill uses in `allowed_tools`
+4. Write step-by-step workflow with JSON examples for each tool call
+5. Add tips section with edge cases and best practices
+6. Update `docs/README.md` and root `README.md` skill tables
 
 ## Adding a New Tool
 

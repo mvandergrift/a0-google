@@ -123,6 +123,19 @@ Disabling a service hides its tools from the agent. Re-enabling requires no re-a
 
 **Important:** The agent uses relative time expressions (e.g., "tomorrow at 2pm") based on the configured timezone. Make sure your Google Calendar account timezone matches the plugin timezone setting.
 
+## Skills (6)
+
+Skills are semantic workflow guides that teach the agent how to chain tools together for common tasks. They are loaded automatically when your request matches their trigger phrases.
+
+| Skill | Triggers | Description |
+|-------|----------|-------------|
+| `google-communicate` | "send email", "draft email", "compose email" | Email composition with contact lookup |
+| `google-research` | "check my inbox", "search emails", "summarize emails" | Inbox triage, search, and summarization |
+| `google-schedule` | "schedule a meeting", "check calendar", "find free time" | Calendar view, create events, check availability |
+| `google-drive` | "upload to drive", "find file", "share document" | File search, upload, download, and sharing |
+| `google-daily-briefing` | "morning briefing", "what's my day", "catch me up" | Cross-service overview (inbox + calendar + tasks) |
+| `google-tasks` | "show my tasks", "add a task", "complete task" | Task list management and to-do tracking |
+
 ## Architecture
 
 ```
@@ -140,6 +153,7 @@ a0-google/
 │   ├── sanitize.py          # Email content sanitization
 │   └── date_utils.py        # Natural language date parsing
 ├── tools/                   # 21 tool files
+├── skills/                  # 6 semantic workflow skills
 ├── api/                     # Config and test API handlers
 ├── webui/                   # Dashboard and config UI
 ├── prompts/                 # Tool prompt definitions
