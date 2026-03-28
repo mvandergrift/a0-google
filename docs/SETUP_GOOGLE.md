@@ -34,19 +34,21 @@ Click each API, then click **Enable**. Wait for the "API enabled" confirmation b
 
 ## OAuth Consent Screen
 
-Before creating credentials, you must configure the consent screen.
+Before creating credentials, you must configure the consent screen. The Google Cloud Console uses a left-side menu with: **Overview**, **Branding**, **Audience**, **Clients**, **Data Access**, **Verification Center**, and **Settings**.
 
 1. Go to **APIs & Services > OAuth consent screen**
-2. Select **External** (or **Internal** if you have Google Workspace)
-3. Fill in required fields:
+2. Click **Get Started**
+3. On the **Branding** page, fill in:
    - **App name**: `Agent Zero`
    - **User support email**: Your email
    - **Developer contact email**: Your email
-4. Click **Save and Continue**
+4. Click **Save** or **Continue**
+5. On the **Audience** page, select **External** (or **Internal** if you have Google Workspace)
+6. Click **Save**
 
-### Scopes (Consent Screen Step 2)
+### Data Access (Scopes)
 
-Click **Add or Remove Scopes** and add:
+Go to the **Data Access** page in the left menu, then click **Add or Remove Scopes** and add:
 
 | Scope | Description |
 |-------|-------------|
@@ -61,27 +63,24 @@ Click **Add or Remove Scopes** and add:
 | `https://www.googleapis.com/auth/contacts` | Read/write contacts |
 | `https://www.googleapis.com/auth/tasks` | Read/write tasks |
 
-> **Note:** The plugin dynamically requests only the scopes for enabled services. You don't need to add scopes for disabled services to the consent screen.
+> **Note:** The plugin dynamically requests only the scopes for enabled services. You don't need to add scopes for disabled services.
 
-Click **Save and Continue**.
+Click **Save**.
 
-### Test Users (Consent Screen Step 3)
+### Test Users
 
-If using **External** type:
-1. Click **Add Users**
-2. Add your Google account email
-3. Click **Save and Continue**
+If you selected **External** audience:
+1. Go back to the **Audience** page
+2. Under **Test users**, click **Add Users**
+3. Add your Google account email
+4. Click **Save**
 
 > **Important:** External apps in "Testing" mode are limited to test users only. For personal use, this is fine. For production, you'd need to publish the app.
 
-### Summary
-
-Review and click **Back to Dashboard**.
-
 ## OAuth 2.0 Credentials
 
-1. Go to **APIs & Services > Credentials**
-2. Click **Create Credentials > OAuth 2.0 Client ID**
+1. Go to the **Clients** page in the left menu (or **APIs & Services > Credentials**)
+2. Click **Create Client** (or **Create Credentials > OAuth 2.0 Client ID**)
 3. Application type: **Desktop app**
 4. Name: `Agent Zero Desktop` (any name)
 5. Click **Create**
