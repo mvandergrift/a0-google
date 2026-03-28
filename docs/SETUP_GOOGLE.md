@@ -43,7 +43,7 @@ Before creating credentials, you must configure the consent screen. The Google C
    - **User support email**: Your email
 4. **Audience**: Select **External** (or **Internal** if you have Google Workspace)
 5. **Contact Information**: Enter your email (Google uses this to notify you about project changes)
-6. **Finish**: Click **Create**
+6. **Finish**: Agree to the **Google API Services: User Data Policy**, then click **Create**
 
 ### Data Access (Scopes)
 
