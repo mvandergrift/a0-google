@@ -66,6 +66,10 @@
                 <div x-show="activeTab === 'auth'">
                     <div class="section-title">OAuth2 Authentication</div>
                     <div class="section-description">
+                        Set up Google Cloud OAuth2 credentials to connect your Google account.
+                        <a href="https://github.com/spinnakergit/a0-google/blob/main/docs/SETUP_GOOGLE.md" target="_blank" style="color: #4285f4;">Setup Guide</a>
+                    </div>
+                    <div class="section-description">
                         <span style="font-weight: 500;">Status:</span>
                         <span :style="'padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; background: ' + authStatusBg + '; color: ' + authStatusColor" x-text="authStatus"></span>
                     </div>
