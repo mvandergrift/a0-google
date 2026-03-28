@@ -31,7 +31,7 @@
     </div>
 
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
-        <button data-gg="test-btn" style="background: #4285f4; color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px;">Test Connection</button>
+        <button data-gg="test-btn" onclick="window._ggMain.testConnection()" style="background: #4285f4; color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px;">Test Connection</button>
     </div>
 
     <div style="padding-top: 12px; border-top: 1px solid var(--border-color, #e0e0e0);">
@@ -127,7 +127,7 @@
 
 <script>
 (function() {
-    const fetchApi = globalThis.fetchApi || fetch;
+    function fetchApi(url, opts) { return (globalThis.fetchApi || fetch)(url, opts); }
     const API_TEST = '/api/plugins/google/google_test';
 
     function $(sel) { return document.querySelector('[data-gg="' + sel + '"]'); }
@@ -193,7 +193,7 @@
         }
     }
 
-    $('test-btn').addEventListener('click', testConnection);
-    testConnection();
+    window._ggMain = { testConnection: testConnection };
+    setTimeout(testConnection, 50);
 })();
 </script>

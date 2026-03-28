@@ -1,346 +1,400 @@
-<div class="google-config" id="google-config-root" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 16px;">
-    <h3 style="color: #4285f4; margin: 0 0 16px 0;">Google Suite Settings</h3>
+<html>
+<head><title>Google Suite</title></head>
+<body>
+    <div x-data="{ activeTab: 'auth', authStatus: 'Checking...', authStatusBg: '#f5f5f5', authStatusColor: '#888', scopeList: 'Loading...', uploadStatus: '', uploadStatusColor: '', codeStatus: '', codeStatusColor: '', authUrlVisible: false, authUrl: '', credsJson: '', authCode: '' }" x-init="
+        if (!config.services) config.services = {};
+        if (!config.services.gmail) config.services.gmail = {};
+        if (!config.services.calendar) config.services.calendar = {};
+        if (!config.services.drive) config.services.drive = {};
+        if (!config.services.contacts) config.services.contacts = {};
+        if (!config.services.tasks) config.services.tasks = {};
+        if (config.services.gmail.enabled === undefined) config.services.gmail.enabled = true;
+        if (config.services.calendar.enabled === undefined) config.services.calendar.enabled = true;
+        if (config.services.drive.enabled === undefined) config.services.drive.enabled = true;
+        if (config.services.contacts.enabled === undefined) config.services.contacts.enabled = false;
+        if (config.services.tasks.enabled === undefined) config.services.tasks.enabled = false;
+        if (!config.gmail) config.gmail = {};
+        if (!config.gmail.max_results) config.gmail.max_results = 20;
+        if (config.gmail.include_spam_trash === undefined) config.gmail.include_spam_trash = false;
+        if (config.gmail.exclude_labels === undefined) config.gmail.exclude_labels = [];
+        if (!config.calendar) config.calendar = {};
+        if (!config.calendar.timezone) config.calendar.timezone = 'America/New_York';
+        if (!config.calendar.calendar_id) config.calendar.calendar_id = 'primary';
+        if (!config.calendar.max_results) config.calendar.max_results = 10;
+        if (!config.calendar.default_duration_minutes) config.calendar.default_duration_minutes = 60;
+        if (!config.drive) config.drive = {};
+        if (!config.drive.default_folder) config.drive.default_folder = '';
+        if (!config.drive.max_upload_mb) config.drive.max_upload_mb = 100;
+        if (!config.memory) config.memory = {};
+        if (config.memory.auto_save === undefined) config.memory.auto_save = true;
+        if (!config.memory.export_format) config.memory.export_format = 'markdown';
+        if (!config.security) config.security = {};
+        if (!config.security.max_attachment_size_mb) config.security.max_attachment_size_mb = 25;
+        if (!config.security.max_attendees) config.security.max_attendees = 50;
+        if (config.security.allowed_recipients === undefined) config.security.allowed_recipients = [];
+        if (config.security.allowed_calendars === undefined) config.security.allowed_calendars = [];
+        if (config.security.sanitize_content === undefined) config.security.sanitize_content = true;
 
-    <!-- Tab Navigation -->
-    <div style="display: flex; gap: 0; border-bottom: 2px solid var(--border-color, #e0e0e0); margin-bottom: 16px;">
-        <button data-gg="tab-auth" class="gg-tab active" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: #4285f4; border-bottom: 2px solid #4285f4; margin-bottom: -2px;">Auth</button>
-        <button data-gg="tab-services" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Services</button>
-        <button data-gg="tab-gmail" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Gmail</button>
-        <button data-gg="tab-calendar" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Calendar</button>
-        <button data-gg="tab-drive" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Drive</button>
-        <button data-gg="tab-security" class="gg-tab" style="padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-secondary, #888); border-bottom: 2px solid transparent; margin-bottom: -2px;">Security</button>
-    </div>
-
-    <!-- Auth Tab -->
-    <div data-gg="panel-auth" class="gg-panel" style="">
-        <div style="margin-bottom: 16px; padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">OAuth2 Authentication</div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                <span style="font-size: 12px; font-weight: 500;">Status:</span>
-                <span data-gg="auth-status" style="padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; background: #f5f5f5; color: #888;">Checking...</span>
-            </div>
-
-            <div style="margin-bottom: 12px;">
-                <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary, #666); margin-bottom: 6px;">Step 1: Upload credentials.json</div>
-                <div style="font-size: 10px; color: var(--text-tertiary, #999); margin-bottom: 6px;">Download OAuth client credentials from Google Cloud Console &gt; APIs &amp; Services &gt; Credentials.</div>
-                <textarea data-gg="credentials-json" rows="4" placeholder='Paste the contents of your credentials.json file here...'
-                          style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
-                <button data-gg="upload-creds-btn" style="background: #4285f4; color: #fff; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; margin-top: 4px;">Upload Credentials</button>
-                <span data-gg="upload-status" style="margin-left: 8px; font-size: 11px;"></span>
-            </div>
-
-            <div style="margin-bottom: 8px;">
-                <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary, #666); margin-bottom: 6px;">Step 2: Authorize</div>
-                <button data-gg="auth-btn" style="background: #1a73e8; color: #fff; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px;">Get Authorization URL</button>
-                <div data-gg="auth-url-box" style="display: none; margin-top: 8px; padding: 8px; background: var(--bg-secondary, #f5f5f5); border-radius: 4px;">
-                    <div style="font-size: 10px; color: var(--text-secondary, #888); margin-bottom: 4px;">Open this URL in your browser and authorize:</div>
-                    <input data-gg="auth-url" type="text" readonly style="width: 100%; padding: 4px 6px; border: 1px solid var(--border-color, #ddd); border-radius: 3px; font-size: 10px; font-family: monospace; box-sizing: border-box;">
-                    <button data-gg="copy-url-btn" style="background: var(--bg-secondary, #e0e0e0); color: var(--text-primary, #333); border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; margin-top: 4px;">Copy URL</button>
-                </div>
-            </div>
-
-            <div>
-                <div style="font-size: 11px; font-weight: 600; color: var(--text-secondary, #666); margin-bottom: 6px;">Step 3: Enter Authorization Code</div>
-                <div style="display: flex; gap: 6px; align-items: center;">
-                    <input data-gg="auth-code" type="text" placeholder="Paste authorization code here"
-                           style="flex: 1; padding: 5px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box;">
-                    <button data-gg="submit-code-btn" style="background: #1a73e8; color: #fff; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; white-space: nowrap;">Submit Code</button>
-                </div>
-                <span data-gg="code-status" style="font-size: 11px; margin-top: 4px; display: inline-block;"></span>
-            </div>
-        </div>
-
-        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Active Scopes</div>
-            <div data-gg="scope-list" style="font-size: 11px; font-family: monospace; color: var(--text-secondary, #888);">Loading...</div>
-        </div>
-    </div>
-
-    <!-- Services Tab -->
-    <div data-gg="panel-services" class="gg-panel" style="display: none;">
-        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Enable/Disable Services</div>
-            <div style="font-size: 10px; color: var(--text-tertiary, #999); margin-bottom: 10px;">Changing services may require re-authorization to request new OAuth scopes.</div>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
-                <input type="checkbox" data-gg="svc-gmail-toggle" checked> <span style="font-weight: 600; color: #d93025;">Gmail</span> — Read, send, search, manage emails
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
-                <input type="checkbox" data-gg="svc-calendar-toggle" checked> <span style="font-weight: 600; color: #4285f4;">Calendar</span> — Events, scheduling, availability
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
-                <input type="checkbox" data-gg="svc-drive-toggle" checked> <span style="font-weight: 600; color: #0f9d58;">Drive</span> — Files, folders, upload, download
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
-                <input type="checkbox" data-gg="svc-contacts-toggle"> <span style="font-weight: 600; color: #f4b400;">Contacts</span> — People, search, create
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; cursor: pointer;">
-                <input type="checkbox" data-gg="svc-tasks-toggle"> <span style="font-weight: 600; color: #ab47bc;">Tasks</span> — Task lists, to-do items
-            </label>
-        </div>
-    </div>
-
-    <!-- Gmail Tab -->
-    <div data-gg="panel-gmail" class="gg-panel" style="display: none;">
-        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Gmail Settings</div>
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Max Results per Query</label>
-            <input type="number" data-gg="gmail-max-results" value="20" min="1" max="100" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 8px; cursor: pointer;">
-                <input type="checkbox" data-gg="gmail-include-spam"> Include spam and trash in results
-            </label>
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 12px; margin-bottom: 4px;">Excluded Labels (one per line)</label>
-            <textarea data-gg="gmail-exclude-labels" rows="2" placeholder="SPAM&#10;TRASH" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box; resize: vertical;"></textarea>
-        </div>
-    </div>
-
-    <!-- Calendar Tab -->
-    <div data-gg="panel-calendar" class="gg-panel" style="display: none;">
-        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Calendar Settings</div>
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Timezone</label>
-            <select data-gg="cal-timezone" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
-                <option value="America/New_York">America/New_York (Eastern)</option>
-                <option value="America/Chicago">America/Chicago (Central)</option>
-                <option value="America/Denver">America/Denver (Mountain)</option>
-                <option value="America/Los_Angeles">America/Los_Angeles (Pacific)</option>
-                <option value="America/Anchorage">America/Anchorage (Alaska)</option>
-                <option value="Pacific/Honolulu">Pacific/Honolulu (Hawaii)</option>
-                <option value="Europe/London">Europe/London (GMT)</option>
-                <option value="Europe/Berlin">Europe/Berlin (CET)</option>
-                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
-                <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
-                <option value="Australia/Sydney">Australia/Sydney (AEST)</option>
-                <option value="UTC">UTC</option>
-            </select>
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Default Calendar ID</label>
-            <input data-gg="cal-id" type="text" value="primary" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                <div>
-                    <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Max Results</label>
-                    <input data-gg="cal-max-results" type="number" value="10" min="1" max="100" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
-                </div>
-                <div>
-                    <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Default Duration (min)</label>
-                    <input data-gg="cal-duration" type="number" value="60" min="5" max="480" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Drive Tab -->
-    <div data-gg="panel-drive" class="gg-panel" style="display: none;">
-        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Drive Settings</div>
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Default Folder ID</label>
-            <input data-gg="drive-folder" type="text" placeholder="Leave empty for root" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px; box-sizing: border-box;">
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Max Upload Size (MB)</label>
-            <input data-gg="drive-max-upload" type="number" value="100" min="1" max="5120" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
-        </div>
-    </div>
-
-    <!-- Security Tab -->
-    <div data-gg="panel-security" class="gg-panel" style="display: none;">
-        <div style="padding: 12px; border: 1px solid var(--border-color, #e0e0e0); border-radius: 6px;">
-            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary, #666); text-transform: uppercase; margin-bottom: 8px;">Security Settings</div>
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px;">Max Attachment Size (MB)</label>
-            <input type="number" data-gg="sec-max-attach" value="25" min="1" max="25" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Max Attendees per Event</label>
-            <input type="number" data-gg="sec-max-attendees" value="50" min="1" max="200" style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 12px;">
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Allowed Recipients (one per line)</label>
-            <textarea data-gg="sec-allowed-recipients" rows="3" placeholder="Leave empty to allow all recipients" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
-            <label style="font-size: 12px; font-weight: 500; display: block; margin-top: 10px; margin-bottom: 4px;">Allowed Calendars (one per line)</label>
-            <textarea data-gg="sec-allowed-calendars" rows="2" placeholder="Leave empty to allow all calendars" style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color, #ddd); border-radius: 4px; font-size: 11px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 8px; cursor: pointer;">
-                <input type="checkbox" data-gg="sec-sanitize" checked> Sanitize email content (strip tracking pixels)
-            </label>
-        </div>
-    </div>
-
-    <div style="margin-top: 16px;">
-        <button data-gg="save-btn" style="background: #4285f4; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">Save Settings</button>
-        <span data-gg="save-status" style="margin-left: 10px; font-size: 12px;"></span>
-        <div style="font-size: 10px; color: var(--text-tertiary, #999); margin-top: 8px;">Use this button (not the outer framework Save) to save Google settings.</div>
-    </div>
-</div>
-
-<script>
-(function() {
-    const fetchApi = globalThis.fetchApi || fetch;
-    const API_CONFIG = '/api/plugins/google/google_config_api';
-    const root = document.querySelector('#google-config-root') || document.querySelector('.google-config') || document.currentScript?.parentElement;
-    if (!root) { console.error('[Google Config] Cannot find config root element'); return; }
-
-    function el(key) { return root.querySelector('[data-gg="' + key + '"]'); }
-
-    // Tab switching
-    const tabNames = ['auth', 'services', 'gmail', 'calendar', 'drive', 'security'];
-    tabNames.forEach(function(name) {
-        var btn = el('tab-' + name);
-        if (btn) btn.addEventListener('click', function() {
-            tabNames.forEach(function(n) {
-                var b = el('tab-' + n), p = el('panel-' + n);
-                if (b) { b.style.color = 'var(--text-secondary, #888)'; b.style.borderBottomColor = 'transparent'; }
-                if (p) p.style.display = 'none';
-            });
-            btn.style.color = '#4285f4';
-            btn.style.borderBottomColor = '#4285f4';
-            var panel = el('panel-' + name);
-            if (panel) panel.style.display = '';
-        });
-    });
-
-    async function loadConfig() {
-        try {
-            const resp = await fetchApi(API_CONFIG, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({action: 'get'})
-            });
-            const c = await resp.json();
-
-            // Auth status
-            const authBadge = el('auth-status');
+        /* Load auth status from API (read-only, not part of config) */
+        (globalThis.fetchApi || fetch)('/api/plugins/google/google_config_api', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({action: 'get'})
+        }).then(r => r.json()).then(c => {
             if (c._auth_status?.authenticated) {
-                authBadge.textContent = 'Connected as ' + c._auth_status.email;
-                authBadge.style.background = '#e8f5e9'; authBadge.style.color = '#2e7d32';
+                authStatus = 'Connected as ' + c._auth_status.email;
+                authStatusBg = '#e8f5e9'; authStatusColor = '#2e7d32';
             } else {
-                authBadge.textContent = c._has_credentials ? 'Not authorized' : 'No credentials';
-                authBadge.style.background = '#fce4ec'; authBadge.style.color = '#c62828';
+                authStatus = c._has_credentials ? 'Not authorized' : 'No credentials';
+                authStatusBg = '#fce4ec'; authStatusColor = '#c62828';
             }
+            scopeList = (c._enabled_services || []).length ? c._enabled_services.join(', ') : 'None enabled';
+        }).catch(() => { authStatus = 'Error loading status'; authStatusBg = '#fce4ec'; authStatusColor = '#c62828'; });
+    ">
+        <template x-if="config">
+            <div>
+                <!-- Tab Navigation -->
+                <div style="display: flex; gap: 0; border-bottom: 2px solid var(--border-color, #e0e0e0); margin-bottom: 16px;">
+                    <template x-for="tab in ['auth', 'services', 'gmail', 'calendar', 'drive', 'security']">
+                        <button @click="activeTab = tab"
+                            :style="'padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; margin-bottom: -2px; color: ' + (activeTab === tab ? '#4285f4' : 'var(--text-secondary, #888)') + '; border-bottom: 2px solid ' + (activeTab === tab ? '#4285f4' : 'transparent')"
+                            x-text="tab.charAt(0).toUpperCase() + tab.slice(1)"></button>
+                    </template>
+                </div>
 
-            // Enabled services
-            var svcs = c._enabled_services || [];
-            var scopeHtml = svcs.length ? svcs.join(', ') : 'None enabled';
-            el('scope-list').textContent = scopeHtml;
+                <!-- Auth Tab -->
+                <div x-show="activeTab === 'auth'">
+                    <div class="section-title">OAuth2 Authentication</div>
+                    <div class="section-description">
+                        <span style="font-weight: 500;">Status:</span>
+                        <span :style="'padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; background: ' + authStatusBg + '; color: ' + authStatusColor" x-text="authStatus"></span>
+                    </div>
 
-            // Service toggles
-            var svcConfig = c.services || {};
-            el('svc-gmail-toggle').checked = svcConfig.gmail?.enabled !== false;
-            el('svc-calendar-toggle').checked = svcConfig.calendar?.enabled !== false;
-            el('svc-drive-toggle').checked = svcConfig.drive?.enabled !== false;
-            el('svc-contacts-toggle').checked = svcConfig.contacts?.enabled === true;
-            el('svc-tasks-toggle').checked = svcConfig.tasks?.enabled === true;
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Step 1: Upload credentials.json</div>
+                            <div class="field-description">Download OAuth client credentials from Google Cloud Console > APIs & Services > Credentials.</div>
+                        </div>
+                        <div class="field-control">
+                            <textarea rows="4" x-model="credsJson" placeholder="Paste the contents of your credentials.json file here..."
+                                style="font-family: monospace; font-size: 11px;"></textarea>
+                            <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                                <button class="btn btn-field" @click="
+                                    if (!credsJson.trim()) { uploadStatus = 'Paste credentials.json first'; uploadStatusColor = '#c62828'; return; }
+                                    (globalThis.fetchApi || fetch)('/api/plugins/google/google_config_api', {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify({action: 'upload_credentials', credentials: credsJson})
+                                    }).then(r => r.json()).then(d => {
+                                        if (d.ok) { uploadStatus = 'Uploaded!'; uploadStatusColor = '#2e7d32'; credsJson = ''; }
+                                        else { uploadStatus = d.error || 'Upload failed'; uploadStatusColor = '#c62828'; }
+                                        setTimeout(() => uploadStatus = '', 5000);
+                                    }).catch(e => { uploadStatus = 'Error: ' + e.message; uploadStatusColor = '#c62828'; });
+                                ">Upload Credentials</button>
+                                <span :style="'font-size: 11px; color: ' + uploadStatusColor" x-text="uploadStatus"></span>
+                            </div>
+                        </div>
+                    </div>
 
-            // Gmail settings
-            var gmail = c.gmail || {};
-            el('gmail-max-results').value = gmail.max_results || 20;
-            el('gmail-include-spam').checked = gmail.include_spam_trash === true;
-            if (gmail.exclude_labels?.length) el('gmail-exclude-labels').value = gmail.exclude_labels.join('\n');
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Step 2: Authorize</div>
+                            <div class="field-description">Click to generate an OAuth authorization URL, then open it in your browser.</div>
+                        </div>
+                        <div class="field-control">
+                            <button class="btn btn-field" @click="
+                                (globalThis.fetchApi || fetch)('/api/plugins/google/google_config_api', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({action: 'auth_url'})
+                                }).then(r => r.json()).then(d => {
+                                    if (d.ok && d.auth_url) { authUrl = d.auth_url; authUrlVisible = true; }
+                                    else { alert(d.error || 'Failed to generate auth URL'); }
+                                }).catch(e => alert('Error: ' + e.message));
+                            ">Get Authorization URL</button>
+                            <div x-show="authUrlVisible" style="margin-top: 8px; padding: 8px; background: var(--bg-secondary, #f5f5f5); border-radius: 4px;">
+                                <div style="font-size: 10px; color: var(--text-secondary, #888); margin-bottom: 4px;">Open this URL in your browser and authorize:</div>
+                                <input type="text" :value="authUrl" readonly style="font-family: monospace; font-size: 10px;">
+                                <button class="btn btn-field" style="margin-top: 4px;" @click="
+                                    navigator.clipboard.writeText(authUrl).then(() => {
+                                        $event.target.textContent = 'Copied!';
+                                        setTimeout(() => $event.target.textContent = 'Copy URL', 2000);
+                                    });
+                                ">Copy URL</button>
+                            </div>
+                        </div>
+                    </div>
 
-            // Calendar settings
-            var cal = c.calendar || {};
-            if (cal.timezone) el('cal-timezone').value = cal.timezone;
-            if (cal.calendar_id) el('cal-id').value = cal.calendar_id;
-            if (cal.max_results) el('cal-max-results').value = cal.max_results;
-            if (cal.default_duration_minutes) el('cal-duration').value = cal.default_duration_minutes;
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Step 3: Enter Authorization Code</div>
+                            <div class="field-description">Paste the code from the Google authorization page.</div>
+                        </div>
+                        <div class="field-control" style="display: flex; gap: 6px; align-items: center;">
+                            <input type="text" x-model="authCode" placeholder="Paste authorization code here"
+                                style="font-family: monospace; flex: 1;">
+                            <button class="btn btn-field" @click="
+                                if (!authCode.trim()) { codeStatus = 'Enter the authorization code'; codeStatusColor = '#c62828'; return; }
+                                codeStatus = 'Authenticating...'; codeStatusColor = '#e65100';
+                                (globalThis.fetchApi || fetch)('/api/plugins/google/google_config_api', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({action: 'auth_callback', code: authCode.trim()})
+                                }).then(r => r.json()).then(d => {
+                                    if (d.ok) {
+                                        codeStatus = 'Authenticated as ' + d.email; codeStatusColor = '#2e7d32';
+                                        authCode = '';
+                                        authStatus = 'Connected as ' + d.email; authStatusBg = '#e8f5e9'; authStatusColor = '#2e7d32';
+                                    } else { codeStatus = d.error || 'Auth failed'; codeStatusColor = '#c62828'; }
+                                }).catch(e => { codeStatus = 'Error: ' + e.message; codeStatusColor = '#c62828'; });
+                            ">Submit Code</button>
+                        </div>
+                        <span :style="'font-size: 11px; color: ' + codeStatusColor" x-text="codeStatus"></span>
+                    </div>
 
-            // Drive settings
-            var drive = c.drive || {};
-            if (drive.default_folder) el('drive-folder').value = drive.default_folder;
-            if (drive.max_upload_mb) el('drive-max-upload').value = drive.max_upload_mb;
+                    <div class="section-title">Active Scopes</div>
+                    <div class="section-description" style="font-family: monospace;" x-text="scopeList"></div>
+                </div>
 
-            // Security
-            var sec = c.security || {};
-            el('sec-max-attach').value = sec.max_attachment_size_mb || 25;
-            el('sec-max-attendees').value = sec.max_attendees || 50;
-            if (sec.allowed_recipients?.length) el('sec-allowed-recipients').value = sec.allowed_recipients.join('\n');
-            if (sec.allowed_calendars?.length) el('sec-allowed-calendars').value = sec.allowed_calendars.join('\n');
-            el('sec-sanitize').checked = sec.sanitize_content !== false;
-        } catch (e) {
-            console.error('[Google Config] Load error:', e);
-        }
-    }
+                <!-- Services Tab -->
+                <div x-show="activeTab === 'services'">
+                    <div class="section-title">Enable/Disable Services</div>
+                    <div class="section-description">Changing services may require re-authorization to request new OAuth scopes.</div>
 
-    async function saveConfig() {
-        var status = el('save-status');
-        status.textContent = 'Saving...'; status.style.color = '#e65100';
-        var config = {
-            action: 'set',
-            services: {
-                gmail: { enabled: el('svc-gmail-toggle')?.checked ?? true },
-                calendar: { enabled: el('svc-calendar-toggle')?.checked ?? true },
-                drive: { enabled: el('svc-drive-toggle')?.checked ?? true },
-                contacts: { enabled: el('svc-contacts-toggle')?.checked ?? false },
-                tasks: { enabled: el('svc-tasks-toggle')?.checked ?? false },
-            },
-            gmail: {
-                max_results: parseInt(el('gmail-max-results')?.value) || 20,
-                include_spam_trash: el('gmail-include-spam')?.checked ?? false,
-                exclude_labels: (el('gmail-exclude-labels')?.value || '').split('\n').map(function(s){return s.trim()}).filter(Boolean),
-            },
-            calendar: {
-                timezone: el('cal-timezone')?.value || 'America/New_York',
-                calendar_id: el('cal-id')?.value || 'primary',
-                max_results: parseInt(el('cal-max-results')?.value) || 10,
-                default_duration_minutes: parseInt(el('cal-duration')?.value) || 60,
-            },
-            drive: {
-                default_folder: el('drive-folder')?.value || '',
-                max_upload_mb: parseInt(el('drive-max-upload')?.value) || 100,
-            },
-            memory: { auto_save: true, export_format: 'markdown' },
-            security: {
-                max_attachment_size_mb: parseInt(el('sec-max-attach')?.value) || 25,
-                max_attendees: parseInt(el('sec-max-attendees')?.value) || 50,
-                allowed_recipients: (el('sec-allowed-recipients')?.value || '').split('\n').map(function(s){return s.trim()}).filter(Boolean),
-                allowed_calendars: (el('sec-allowed-calendars')?.value || '').split('\n').map(function(s){return s.trim()}).filter(Boolean),
-                sanitize_content: el('sec-sanitize')?.checked ?? true,
-            },
-        };
-        try {
-            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(config) });
-            var result = await resp.json();
-            if (result.ok) { status.textContent = 'Saved!'; status.style.color = '#2e7d32'; }
-            else { status.textContent = 'Error: ' + (result.error || 'Unknown'); status.style.color = '#c62828'; }
-        } catch (e) { status.textContent = 'Network error: ' + e.message; status.style.color = '#c62828'; }
-        setTimeout(function() { status.textContent = ''; }, 5000);
-    }
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title" style="color: #d93025;">Gmail</div>
+                            <div class="field-description">Read, send, search, manage emails.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.services.gmail.enabled"><span class="toggler"></span></label>
+                        </div>
+                    </div>
 
-    // Upload credentials
-    el('upload-creds-btn')?.addEventListener('click', async function() {
-        var status = el('upload-status');
-        var credsText = el('credentials-json')?.value || '';
-        if (!credsText.trim()) { status.textContent = 'Paste credentials.json first'; status.style.color = '#c62828'; return; }
-        try {
-            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'upload_credentials', credentials: credsText}) });
-            var result = await resp.json();
-            if (result.ok) { status.textContent = 'Uploaded!'; status.style.color = '#2e7d32'; el('credentials-json').value = ''; loadConfig(); }
-            else { status.textContent = result.error || 'Upload failed'; status.style.color = '#c62828'; }
-        } catch (e) { status.textContent = 'Error: ' + e.message; status.style.color = '#c62828'; }
-        setTimeout(function() { status.textContent = ''; }, 5000);
-    });
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title" style="color: #4285f4;">Calendar</div>
+                            <div class="field-description">Events, scheduling, availability.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.services.calendar.enabled"><span class="toggler"></span></label>
+                        </div>
+                    </div>
 
-    // Auth URL
-    el('auth-btn')?.addEventListener('click', async function() {
-        try {
-            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'auth_url'}) });
-            var result = await resp.json();
-            if (result.ok && result.auth_url) { el('auth-url').value = result.auth_url; el('auth-url-box').style.display = 'block'; }
-            else { alert(result.error || 'Failed to generate auth URL'); }
-        } catch (e) { alert('Error: ' + e.message); }
-    });
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title" style="color: #0f9d58;">Drive</div>
+                            <div class="field-description">Files, folders, upload, download.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.services.drive.enabled"><span class="toggler"></span></label>
+                        </div>
+                    </div>
 
-    // Copy URL
-    el('copy-url-btn')?.addEventListener('click', function() {
-        var url = el('auth-url')?.value;
-        if (url) { navigator.clipboard.writeText(url).then(function() { el('copy-url-btn').textContent = 'Copied!'; setTimeout(function() { el('copy-url-btn').textContent = 'Copy URL'; }, 2000); }); }
-    });
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title" style="color: #f4b400;">Contacts</div>
+                            <div class="field-description">People, search, create.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.services.contacts.enabled"><span class="toggler"></span></label>
+                        </div>
+                    </div>
 
-    // Submit auth code
-    el('submit-code-btn')?.addEventListener('click', async function() {
-        var status = el('code-status');
-        var code = el('auth-code')?.value || '';
-        if (!code.trim()) { status.textContent = 'Enter the authorization code'; status.style.color = '#c62828'; return; }
-        status.textContent = 'Authenticating...'; status.style.color = '#e65100';
-        try {
-            var resp = await fetchApi(API_CONFIG, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'auth_callback', code: code.trim()}) });
-            var result = await resp.json();
-            if (result.ok) { status.textContent = 'Authenticated as ' + result.email; status.style.color = '#2e7d32'; el('auth-code').value = ''; loadConfig(); }
-            else { status.textContent = result.error || 'Auth failed'; status.style.color = '#c62828'; }
-        } catch (e) { status.textContent = 'Error: ' + e.message; status.style.color = '#c62828'; }
-    });
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title" style="color: #ab47bc;">Tasks</div>
+                            <div class="field-description">Task lists, to-do items.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.services.tasks.enabled"><span class="toggler"></span></label>
+                        </div>
+                    </div>
+                </div>
 
-    el('save-btn')?.addEventListener('click', saveConfig);
-    loadConfig();
-})();
-</script>
+                <!-- Gmail Tab -->
+                <div x-show="activeTab === 'gmail'">
+                    <div class="section-title">Gmail Settings</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Max Results per Query</div>
+                            <div class="field-description">Maximum number of results returned per search (1-100).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="100" x-model.number="config.gmail.max_results">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Include spam and trash</div>
+                            <div class="field-description">Include spam and trash folders in search results.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.gmail.include_spam_trash"><span class="toggler"></span></label>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Excluded Labels</div>
+                            <div class="field-description">Labels to exclude from results, one per line.</div>
+                        </div>
+                        <div class="field-control">
+                            <textarea rows="2"
+                                :value="(config.gmail.exclude_labels || []).join('\n')"
+                                @input="config.gmail.exclude_labels = $event.target.value.split('\n').map(s => s.trim()).filter(Boolean)"
+                                placeholder="SPAM&#10;TRASH"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Tab -->
+                <div x-show="activeTab === 'calendar'">
+                    <div class="section-title">Calendar Settings</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Timezone</div>
+                            <div class="field-description">Default timezone for calendar events.</div>
+                        </div>
+                        <div class="field-control">
+                            <select x-model="config.calendar.timezone">
+                                <option value="America/New_York">America/New_York (Eastern)</option>
+                                <option value="America/Chicago">America/Chicago (Central)</option>
+                                <option value="America/Denver">America/Denver (Mountain)</option>
+                                <option value="America/Los_Angeles">America/Los_Angeles (Pacific)</option>
+                                <option value="America/Anchorage">America/Anchorage (Alaska)</option>
+                                <option value="Pacific/Honolulu">Pacific/Honolulu (Hawaii)</option>
+                                <option value="Europe/London">Europe/London (GMT)</option>
+                                <option value="Europe/Berlin">Europe/Berlin (CET)</option>
+                                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                                <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+                                <option value="Australia/Sydney">Australia/Sydney (AEST)</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Default Calendar ID</div>
+                            <div class="field-description">Calendar to use by default (usually "primary").</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="text" x-model="config.calendar.calendar_id" placeholder="primary">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Max Results</div>
+                            <div class="field-description">Maximum events returned per query (1-100).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="100" x-model.number="config.calendar.max_results">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Default Duration (minutes)</div>
+                            <div class="field-description">Default event duration when not specified (5-480).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="5" max="480" x-model.number="config.calendar.default_duration_minutes">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drive Tab -->
+                <div x-show="activeTab === 'drive'">
+                    <div class="section-title">Drive Settings</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Default Folder ID</div>
+                            <div class="field-description">Default folder for uploads. Leave empty for root.</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="text" x-model="config.drive.default_folder" placeholder="Leave empty for root">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Max Upload Size (MB)</div>
+                            <div class="field-description">Maximum file upload size in megabytes (1-5120).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="5120" x-model.number="config.drive.max_upload_mb">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Tab -->
+                <div x-show="activeTab === 'security'">
+                    <div class="section-title">Security Settings</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Max Attachment Size (MB)</div>
+                            <div class="field-description">Maximum email attachment size (1-25).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="25" x-model.number="config.security.max_attachment_size_mb">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Max Attendees per Event</div>
+                            <div class="field-description">Maximum attendees allowed per calendar event (1-200).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="200" x-model.number="config.security.max_attendees">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Allowed Recipients</div>
+                            <div class="field-description">Restrict email sending to these addresses. Leave empty to allow all.</div>
+                        </div>
+                        <div class="field-control">
+                            <textarea rows="3"
+                                :value="(config.security.allowed_recipients || []).join('\n')"
+                                @input="config.security.allowed_recipients = $event.target.value.split('\n').map(s => s.trim()).filter(Boolean)"
+                                placeholder="Leave empty to allow all recipients"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Allowed Calendars</div>
+                            <div class="field-description">Restrict calendar access to these IDs. Leave empty to allow all.</div>
+                        </div>
+                        <div class="field-control">
+                            <textarea rows="2"
+                                :value="(config.security.allowed_calendars || []).join('\n')"
+                                @input="config.security.allowed_calendars = $event.target.value.split('\n').map(s => s.trim()).filter(Boolean)"
+                                placeholder="Leave empty to allow all calendars"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Sanitize email content</div>
+                            <div class="field-description">Strip tracking pixels and known injection patterns from emails.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.security.sanitize_content"><span class="toggler"></span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</body>
+</html>
