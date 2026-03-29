@@ -5,14 +5,14 @@ class ContactsList(Tool):
     """List Google Contacts with names, emails, and phone numbers."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("contacts", self.agent):
             return Response(
                 message="Contacts service is disabled. Enable it in Google Suite plugin settings.",
                 break_loop=False,
             )
 
-        from plugins.google.helpers.contacts_client import ContactsClient, format_contact_list
+        from usr.plugins.google.helpers.contacts_client import ContactsClient, format_contact_list
 
         limit = int(self.args.get("limit", "50"))
         sort_order = self.args.get("sort_order", "LAST_NAME_ASCENDING")

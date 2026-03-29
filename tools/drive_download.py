@@ -5,14 +5,14 @@ class DriveDownload(Tool):
     """Download a file from Google Drive to a local path."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("drive", self.agent):
             return Response(
                 message="Drive service is disabled. Enable it in Google Suite plugin settings.",
                 break_loop=False,
             )
 
-        from plugins.google.helpers.drive_client import DriveClient
+        from usr.plugins.google.helpers.drive_client import DriveClient
 
         file_id = self.args.get("file_id", "")
         local_path = self.args.get("local_path", "")

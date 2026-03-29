@@ -5,14 +5,14 @@ class ContactsCreate(Tool):
     """Create a new Google Contact."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("contacts", self.agent):
             return Response(
                 message="Contacts service is disabled. Enable it in Google Suite plugin settings.",
                 break_loop=False,
             )
 
-        from plugins.google.helpers.contacts_client import ContactsClient, format_contact
+        from usr.plugins.google.helpers.contacts_client import ContactsClient, format_contact
 
         first_name = self.args.get("first_name", "")
         last_name = self.args.get("last_name", "")

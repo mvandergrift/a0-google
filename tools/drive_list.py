@@ -5,14 +5,14 @@ class DriveList(Tool):
     """List files in Google Drive, optionally filtered by folder, MIME type, or ordering."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("drive", self.agent):
             return Response(
                 message="Drive service is disabled. Enable it in Google Suite plugin settings.",
                 break_loop=False,
             )
 
-        from plugins.google.helpers.drive_client import DriveClient, format_file_list
+        from usr.plugins.google.helpers.drive_client import DriveClient, format_file_list
 
         folder_id = self.args.get("folder_id", "")
         mime_type = self.args.get("mime_type", "")

@@ -5,7 +5,7 @@ class CalendarAvailability(Tool):
     """Check free/busy slots on Google Calendar."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("calendar", self.agent):
             return Response(
                 message="Calendar service is disabled. Enable it in Google Suite plugin settings.",
@@ -19,9 +19,9 @@ class CalendarAvailability(Tool):
         duration_minutes = self.args.get("duration_minutes", "")
         calendars = self.args.get("calendars", "")
 
-        from plugins.google.helpers.calendar_client import CalendarClient
-        from plugins.google.helpers.google_auth import get_google_config
-        from plugins.google.helpers.date_utils import parse_datetime
+        from usr.plugins.google.helpers.calendar_client import CalendarClient
+        from usr.plugins.google.helpers.google_auth import get_google_config
+        from usr.plugins.google.helpers.date_utils import parse_datetime
 
         config = get_google_config(self.agent)
         timezone = config.get("defaults", {}).get("timezone", "America/New_York")
@@ -48,7 +48,7 @@ class CalendarAvailability(Tool):
                 time_max = parsed + "T23:59:59Z"
             else:
                 time_min = parsed + "Z"
-                from plugins.google.helpers.date_utils import compute_end_time
+                from usr.plugins.google.helpers.date_utils import compute_end_time
                 time_max = compute_end_time(parsed, 24 * 60) + "Z"
         elif start_date and end_date:
             parsed_start = parse_datetime(start_date, timezone)

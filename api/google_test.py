@@ -16,18 +16,7 @@ class GoogleTest(ApiHandler):
 
     async def process(self, input: dict, request: Request) -> dict | Response:
         try:
-            # Self-heal: ensure symlink exists for plugin namespace imports
-            from pathlib import Path
-            plugin_dir = Path(__file__).resolve().parent.parent
-            for root in [Path("/a0"), Path("/git/agent-zero")]:
-                plugins_dir = root / "plugins"
-                if plugins_dir.is_dir():
-                    symlink = plugins_dir / "google"
-                    if not symlink.exists():
-                        symlink.symlink_to(plugin_dir)
-                    break
-
-            from plugins.google.helpers.google_auth import (
+            from usr.plugins.google.helpers.google_auth import (
                 get_google_config, is_authenticated, build_service,
                 get_enabled_services,
             )

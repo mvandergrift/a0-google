@@ -1,11 +1,11 @@
 from helpers.tool import Tool, Response
-from plugins.google.helpers.google_auth import (
+from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError, GoogleAPIError,
 )
-from plugins.google.helpers.gmail_client import (
+from usr.plugins.google.helpers.gmail_client import (
     parse_message, create_message, format_email_list,
 )
-from plugins.google.helpers.sanitize import (
+from usr.plugins.google.helpers.sanitize import (
     validate_recipients, sanitize_subject, sanitize_body,
 )
 
@@ -16,7 +16,7 @@ class GmailDraft(Tool):
     """Manage Gmail drafts: create, list, send, or delete drafts."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("gmail", self.agent):
             return Response(
                 message="Gmail service is disabled. Enable it in Google Suite plugin settings.",

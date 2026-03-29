@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from plugins.google.helpers.google_auth import (
+from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError,
 )
 

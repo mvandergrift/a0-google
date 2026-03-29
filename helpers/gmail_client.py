@@ -13,7 +13,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 from pathlib import Path
 
-from plugins.google.helpers.google_auth import (
+from usr.plugins.google.helpers.google_auth import (
     get_google_config, get_credentials, build_service,
     GoogleAuthError, GoogleAPIError,
 )
@@ -94,7 +94,7 @@ def _extract_body(payload: dict) -> str:
 
 def _html_to_text(html: str) -> str:
     """Basic HTML to plain text conversion with tracking pixel removal."""
-    from plugins.google.helpers.sanitize import strip_tracking_pixels, html_to_text
+    from usr.plugins.google.helpers.sanitize import strip_tracking_pixels, html_to_text
     return html_to_text(strip_tracking_pixels(html))
 
 

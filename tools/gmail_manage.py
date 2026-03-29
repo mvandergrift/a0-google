@@ -1,5 +1,5 @@
 from helpers.tool import Tool, Response
-from plugins.google.helpers.google_auth import (
+from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError, GoogleAPIError,
 )
 
@@ -14,7 +14,7 @@ class GmailManage(Tool):
     """Manage Gmail messages: archive, trash, mark read/unread, add/remove labels."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("gmail", self.agent):
             return Response(
                 message="Gmail service is disabled. Enable it in Google Suite plugin settings.",

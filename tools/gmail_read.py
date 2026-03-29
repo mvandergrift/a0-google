@@ -1,18 +1,18 @@
 from helpers.tool import Tool, Response
-from plugins.google.helpers.google_auth import (
+from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError, GoogleAPIError,
 )
-from plugins.google.helpers.gmail_client import (
+from usr.plugins.google.helpers.gmail_client import (
     parse_message, format_email, format_email_list,
 )
-from plugins.google.helpers.sanitize import sanitize_body
+from usr.plugins.google.helpers.sanitize import sanitize_body
 
 
 class GmailRead(Tool):
     """Read emails from Gmail: list inbox, read a specific message, or list labels."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("gmail", self.agent):
             return Response(
                 message="Gmail service is disabled. Enable it in Google Suite plugin settings.",

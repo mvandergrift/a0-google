@@ -5,7 +5,7 @@ class CalendarDelete(Tool):
     """Delete/cancel a Google Calendar event."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("calendar", self.agent):
             return Response(
                 message="Calendar service is disabled. Enable it in Google Suite plugin settings.",
@@ -19,10 +19,10 @@ class CalendarDelete(Tool):
         if not event_id:
             return Response(message="Error: event_id is required.", break_loop=False)
 
-        from plugins.google.helpers.calendar_client import (
+        from usr.plugins.google.helpers.calendar_client import (
             CalendarClient, format_event,
         )
-        from plugins.google.helpers.google_auth import get_google_config
+        from usr.plugins.google.helpers.google_auth import get_google_config
 
         config = get_google_config(self.agent)
         if not calendar_id:

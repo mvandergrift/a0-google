@@ -1,13 +1,13 @@
 import time
 from pathlib import Path
 from helpers.tool import Tool, Response
-from plugins.google.helpers.google_auth import (
+from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError, GoogleAPIError,
 )
-from plugins.google.helpers.gmail_client import (
+from usr.plugins.google.helpers.gmail_client import (
     parse_message, format_email,
 )
-from plugins.google.helpers.sanitize import sanitize_body, truncate_bulk
+from usr.plugins.google.helpers.sanitize import sanitize_body, truncate_bulk
 
 SUMMARIZE_PROMPT = """You are summarizing email content. Analyze the following email(s) and produce a structured summary.
 
@@ -49,7 +49,7 @@ class GmailSummarize(Tool):
     """Summarize emails using AI: by message ID, thread, query, or unread inbox."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("gmail", self.agent):
             return Response(
                 message="Gmail service is disabled. Enable it in Google Suite plugin settings.",

@@ -5,14 +5,14 @@ class ContactsSearch(Tool):
     """Search Google Contacts by name, email, or phone number."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("contacts", self.agent):
             return Response(
                 message="Contacts service is disabled. Enable it in Google Suite plugin settings.",
                 break_loop=False,
             )
 
-        from plugins.google.helpers.contacts_client import ContactsClient, format_contact_list
+        from usr.plugins.google.helpers.contacts_client import ContactsClient, format_contact_list
 
         query = self.args.get("query", "")
         limit = int(self.args.get("limit", "20"))

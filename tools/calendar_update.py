@@ -5,7 +5,7 @@ class CalendarUpdate(Tool):
     """Update an existing Google Calendar event."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("calendar", self.agent):
             return Response(
                 message="Calendar service is disabled. Enable it in Google Suite plugin settings.",
@@ -24,11 +24,11 @@ class CalendarUpdate(Tool):
         if not event_id:
             return Response(message="Error: event_id is required.", break_loop=False)
 
-        from plugins.google.helpers.calendar_client import (
+        from usr.plugins.google.helpers.calendar_client import (
             CalendarClient, format_event,
         )
-        from plugins.google.helpers.google_auth import get_google_config
-        from plugins.google.helpers.date_utils import parse_datetime
+        from usr.plugins.google.helpers.google_auth import get_google_config
+        from usr.plugins.google.helpers.date_utils import parse_datetime
 
         config = get_google_config(self.agent)
         if not calendar_id:
@@ -76,7 +76,7 @@ class CalendarUpdate(Tool):
         if parsed_start and not parsed_end:
             try:
                 from dateutil.parser import isoparse
-                from plugins.google.helpers.date_utils import compute_end_time
+                from usr.plugins.google.helpers.date_utils import compute_end_time
                 existing = client.get_event(event_id, calendar_id)
                 orig_start = existing.get("start", {}).get("dateTime", "")
                 orig_end = existing.get("end", {}).get("dateTime", "")

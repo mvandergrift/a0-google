@@ -5,7 +5,7 @@ class CalendarCreate(Tool):
     """Create a new Google Calendar event."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("calendar", self.agent):
             return Response(
                 message="Calendar service is disabled. Enable it in Google Suite plugin settings.",
@@ -27,11 +27,11 @@ class CalendarCreate(Tool):
         if not start:
             return Response(message="Error: Event start time is required.", break_loop=False)
 
-        from plugins.google.helpers.calendar_client import (
+        from usr.plugins.google.helpers.calendar_client import (
             CalendarClient, format_event,
         )
-        from plugins.google.helpers.google_auth import get_google_config
-        from plugins.google.helpers.date_utils import (
+        from usr.plugins.google.helpers.google_auth import get_google_config
+        from usr.plugins.google.helpers.date_utils import (
             parse_datetime, parse_duration, compute_end_time,
         )
 

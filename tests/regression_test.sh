@@ -189,7 +189,7 @@ section "T3: Python Imports"
 # ============================================================
 
 # T3.1: google_auth imports clean
-RESULT=$(pyexec "from plugins.google.helpers.google_auth import *; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.google_auth import *; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T3.1 google_auth imports clean"
@@ -198,7 +198,7 @@ else
 fi
 
 # T3.2: gmail_client imports clean
-RESULT=$(pyexec "from plugins.google.helpers.gmail_client import *; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.gmail_client import *; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T3.2 gmail_client imports clean"
@@ -207,7 +207,7 @@ else
 fi
 
 # T3.3: calendar_client imports clean
-RESULT=$(pyexec "from plugins.google.helpers.calendar_client import *; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.calendar_client import *; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T3.3 calendar_client imports clean"
@@ -216,7 +216,7 @@ else
 fi
 
 # T3.4: drive_client imports clean
-RESULT=$(pyexec "from plugins.google.helpers.drive_client import *; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.drive_client import *; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T3.4 drive_client imports clean"
@@ -225,7 +225,7 @@ else
 fi
 
 # T3.5: sanitize imports clean
-RESULT=$(pyexec "from plugins.google.helpers.sanitize import *; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.sanitize import *; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T3.5 sanitize imports clean"
@@ -544,7 +544,7 @@ section "T9: Service Client Modules"
 # ============================================================
 
 # T9.1: drive_client.py has DriveClient class
-RESULT=$(pyexec "from plugins.google.helpers.drive_client import DriveClient; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.drive_client import DriveClient; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T9.1 DriveClient class exists in drive_client.py"
@@ -553,7 +553,7 @@ else
 fi
 
 # T9.2: contacts_client.py has ContactsClient class
-RESULT=$(pyexec "from plugins.google.helpers.contacts_client import ContactsClient; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.contacts_client import ContactsClient; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T9.2 ContactsClient class exists in contacts_client.py"
@@ -562,7 +562,7 @@ else
 fi
 
 # T9.3: tasks_client.py has TasksClient class
-RESULT=$(pyexec "from plugins.google.helpers.tasks_client import TasksClient; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.tasks_client import TasksClient; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T9.3 TasksClient class exists in tasks_client.py"
@@ -571,7 +571,7 @@ else
 fi
 
 # T9.4: date_utils.py has parse_datetime function
-RESULT=$(pyexec "from plugins.google.helpers.date_utils import parse_datetime; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.date_utils import parse_datetime; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T9.4 parse_datetime function exists in date_utils.py"
@@ -580,7 +580,7 @@ else
 fi
 
 # T9.5: sanitize.py has validate_email_address function
-RESULT=$(pyexec "from plugins.google.helpers.sanitize import validate_email_address; print('ok')")
+RESULT=$(pyexec "from usr.plugins.google.helpers.sanitize import validate_email_address; print('ok')")
 LAST=$(echo "$RESULT" | tail -1)
 if [ "$LAST" = "ok" ]; then
     pass "T9.5 validate_email_address function exists in sanitize.py"

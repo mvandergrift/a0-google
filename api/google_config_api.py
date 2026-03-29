@@ -61,7 +61,7 @@ class GoogleConfigApi(ApiHandler):
 
             # Check auth status
             try:
-                from plugins.google.helpers.google_auth import is_authenticated
+                from usr.plugins.google.helpers.google_auth import is_authenticated
                 authenticated, email_or_error = is_authenticated(config)
                 config["_auth_status"] = {
                     "authenticated": authenticated,
@@ -77,14 +77,14 @@ class GoogleConfigApi(ApiHandler):
 
             # Check if credentials.json exists
             try:
-                from plugins.google.helpers.google_auth import _credentials_path
+                from usr.plugins.google.helpers.google_auth import _credentials_path
                 config["_has_credentials"] = _credentials_path(config).exists()
             except Exception:
                 config["_has_credentials"] = False
 
             # Report enabled services
             try:
-                from plugins.google.helpers.google_auth import get_enabled_services
+                from usr.plugins.google.helpers.google_auth import get_enabled_services
                 config["_enabled_services"] = sorted(get_enabled_services(config))
             except Exception:
                 config["_enabled_services"] = []
@@ -96,7 +96,7 @@ class GoogleConfigApi(ApiHandler):
     def _get_auth_url(self) -> dict:
         """Generate OAuth authorization URL."""
         try:
-            from plugins.google.helpers.google_auth import (
+            from usr.plugins.google.helpers.google_auth import (
                 get_google_config, generate_auth_url,
             )
             config = get_google_config()
@@ -112,7 +112,7 @@ class GoogleConfigApi(ApiHandler):
             if not code:
                 return {"ok": False, "error": "No authorization code provided."}
 
-            from plugins.google.helpers.google_auth import (
+            from usr.plugins.google.helpers.google_auth import (
                 get_google_config, exchange_auth_code, is_authenticated,
             )
             config = get_google_config()
@@ -148,7 +148,7 @@ class GoogleConfigApi(ApiHandler):
                     "error": "Invalid credentials.json: must contain 'installed' or 'web' key.",
                 }
 
-            from plugins.google.helpers.google_auth import _data_dir, get_google_config, secure_write_json
+            from usr.plugins.google.helpers.google_auth import _data_dir, get_google_config, secure_write_json
             config = get_google_config()
             data = _data_dir(config)
             creds_path = data / "credentials.json"
@@ -175,7 +175,7 @@ class GoogleConfigApi(ApiHandler):
             config_path = _get_config_path()
             config_path.parent.mkdir(parents=True, exist_ok=True)
 
-            from plugins.google.helpers.google_auth import secure_write_json
+            from usr.plugins.google.helpers.google_auth import secure_write_json
             secure_write_json(config_path, config)
 
             return {"ok": True}

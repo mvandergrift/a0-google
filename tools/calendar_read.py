@@ -5,7 +5,7 @@ class CalendarRead(Tool):
     """Read events from Google Calendar."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("calendar", self.agent):
             return Response(
                 message="Calendar service is disabled. Enable it in Google Suite plugin settings.",
@@ -20,10 +20,10 @@ class CalendarRead(Tool):
         event_id = self.args.get("event_id", "")
         limit = self.args.get("limit", "")
 
-        from plugins.google.helpers.calendar_client import (
+        from usr.plugins.google.helpers.calendar_client import (
             CalendarClient, format_events, format_event,
         )
-        from plugins.google.helpers.google_auth import get_google_config
+        from usr.plugins.google.helpers.google_auth import get_google_config
 
         config = get_google_config(self.agent)
         if not calendar_id:
@@ -69,7 +69,7 @@ class CalendarRead(Tool):
                         message="Error: Both start_date and end_date are required for range queries.",
                         break_loop=False,
                     )
-                from plugins.google.helpers.date_utils import parse_datetime
+                from usr.plugins.google.helpers.date_utils import parse_datetime
                 time_min = parse_datetime(start_date, timezone)
                 time_max = parse_datetime(end_date, timezone)
                 if not time_min or not time_max:

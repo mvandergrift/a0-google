@@ -5,14 +5,14 @@ class TasksList(Tool):
     """List Google Tasks lists or tasks within a specific list."""
 
     async def execute(self, **kwargs) -> Response:
-        from plugins.google.helpers.google_auth import is_service_enabled
+        from usr.plugins.google.helpers.google_auth import is_service_enabled
         if not is_service_enabled("tasks", self.agent):
             return Response(
                 message="Tasks service is disabled. Enable it in Google Suite plugin settings.",
                 break_loop=False,
             )
 
-        from plugins.google.helpers.tasks_client import TasksClient, format_task_list
+        from usr.plugins.google.helpers.tasks_client import TasksClient, format_task_list
 
         action = self.args.get("action", "tasks")
         task_list_id = self.args.get("task_list_id", "@default")
