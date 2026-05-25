@@ -37,6 +37,9 @@ SERVICE_SCOPES = {
     "tasks": [
         "https://www.googleapis.com/auth/tasks",
     ],
+    "sheets": [
+        "https://www.googleapis.com/auth/spreadsheets",
+    ],
 }
 
 # Service name → (API name, API version)
@@ -46,6 +49,7 @@ SERVICE_API = {
     "drive": ("drive", "v3"),
     "contacts": ("people", "v1"),
     "tasks": ("tasks", "v1"),
+    "sheets": ("sheets", "v4"),
 }
 
 # Default enabled services
