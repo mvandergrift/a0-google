@@ -105,12 +105,16 @@ The file should look like:
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_secret": "GOCSPX-...",
-    "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"]
+    "redirect_uris": ["http://localhost"]
   }
 }
 ```
 
 The key `"installed"` indicates a Desktop app type. The plugin also supports `"web"` type for web application credentials.
+
+> **Note on redirect URI:** The plugin uses `http://127.0.0.1:1` as the OAuth redirect. Desktop-app OAuth clients automatically accept any loopback address, so you do **not** need to register this URI in Google Cloud Console — it works out of the box. After granting consent, your browser will show a "connection refused" or "this site can't be reached" page; this is expected. Copy the full URL from the browser's address bar and paste it into the plugin (it contains the authorization code as a query parameter).
+>
+> The `urn:ietf:wg:oauth:2.0:oob` redirect that older guides reference was deprecated by Google in February 2022 and no longer works for OAuth clients created after October 2022.
 
 ## Service-Specific Notes
 

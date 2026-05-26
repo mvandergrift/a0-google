@@ -74,9 +74,9 @@ Or via the install script:
 2. A Google consent URL will appear — open it in your browser
 3. Sign in with your Google account
 4. Grant the requested permissions (Gmail, Calendar, Drive, etc.)
-5. Google will display an authorization code — copy it
-6. Paste the code back into the plugin's **Authorization Code** field
-7. Click **Submit Code**
+5. Google will redirect your browser to `http://127.0.0.1:1/?code=...` — the page will fail to load ("This site can't be reached"); this is expected
+6. Copy the full URL from your browser's address bar
+7. Paste it into the plugin's **Authorization Code** field and click **Submit Code**
 8. Verify the status shows **Authenticated** with your email address
 
 ## Step 7: Try It

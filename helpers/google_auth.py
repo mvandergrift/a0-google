@@ -10,8 +10,23 @@ import logging
 import os
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse, parse_qs
 
 logger = logging.getLogger("google_auth")
+
+# Loopback redirect for the installed-app OAuth flow. Google deprecated
+# urn:ietf:wg:oauth:2.0:oob in Feb 2022 and stopped issuing it to new
+# OAuth clients in Oct 2022. Port 1 is reserved (TCPMUX) so the browser
+# reliably fails to connect, leaving the code visible in the address bar
+# for the user to copy.
+_REDIRECT_URI = "http://127.0.0.1:1"
+
+# We pass include_granted_scopes=true to support incremental auth, which
+# means Google may return a token covering more scopes than we requested
+# (the union of all prior consents for this client). RFC 6749 §3.3 permits
+# this, but oauthlib treats any scope mismatch as an error by default.
+# Relax that so previously-granted scopes don't break the token exchange.
+os.environ.setdefault("OAUTHLIB_RELAX_TOKEN_SCOPE", "1")
 
 # ---------------------------------------------------------------------------
 # Scope registry — maps service names to their required OAuth scopes
@@ -154,12 +169,11 @@ def get_credentials(config: dict):
     from google.auth.transport.requests import Request
 
     token_file = _token_path(config)
-    scopes = get_scopes(config)
 
     creds = None
     if token_file.exists():
         try:
-            creds = Credentials.from_authorized_user_file(str(token_file), scopes)
+            creds = Credentials.from_authorized_user_file(str(token_file))
         except Exception:
             creds = None
 
@@ -223,7 +237,7 @@ def generate_auth_url(config: dict) -> str:
     flow = Flow.from_client_secrets_file(
         str(creds_file),
         scopes=scopes,
-        redirect_uri="urn:ietf:wg:oauth:2.0:oob",
+        redirect_uri=_REDIRECT_URI,
     )
     auth_url, _ = flow.authorization_url(
         access_type="offline",
@@ -246,18 +260,33 @@ def generate_auth_url(config: dict) -> str:
 
 
 def exchange_auth_code(config: dict, code: str):
-    """Exchange an authorization code for credentials and save the token."""
+    """Exchange an authorization code for credentials and save the token.
+
+    Accepts either a bare authorization code or the full redirected URL
+    (e.g. http://127.0.0.1:1/?code=...&scope=...). If a URL is passed,
+    the `code` query parameter is extracted.
+    """
     from google_auth_oauthlib.flow import Flow
 
     creds_file = _credentials_path(config)
     if not creds_file.exists():
         raise GoogleAuthError("credentials.json not found.")
 
+    code = (code or "").strip()
+    if code.lower().startswith(("http://", "https://")):
+        parsed = parse_qs(urlparse(code).query).get("code", [])
+        if not parsed:
+            raise GoogleAuthError(
+                "Pasted URL did not contain a 'code' parameter. "
+                "Copy the full URL from the browser address bar after granting consent."
+            )
+        code = parsed[0]
+
     scopes = get_scopes(config)
     flow = Flow.from_client_secrets_file(
         str(creds_file),
         scopes=scopes,
-        redirect_uri="urn:ietf:wg:oauth:2.0:oob",
+        redirect_uri=_REDIRECT_URI,
     )
 
     # Restore PKCE code_verifier from generate_auth_url()

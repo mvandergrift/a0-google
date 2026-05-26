@@ -34,9 +34,9 @@ Unified Google integration — Gmail, Calendar, Drive, Contacts, and Tasks with 
 
 1. Open Agent Zero WebUI > **Settings > External Services > Google Suite**
 2. In the **Auth** tab, paste the contents of `credentials.json`
-3. Click **Authorize** — you'll be redirected to Google's consent screen
-4. Grant the requested permissions and copy the authorization code
-5. Paste the authorization code back into the plugin
+3. Click **Authorize** — you'll be sent to Google's consent screen
+4. Grant the requested permissions; Google will redirect to `http://127.0.0.1:1/?code=...` (the browser page will fail to load, this is expected)
+5. Copy the full URL from your browser's address bar and paste it back into the plugin
 6. Verify the connection shows "Authenticated" with your email address
 
 ### 3. Try It
