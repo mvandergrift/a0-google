@@ -7,12 +7,14 @@ API does not expose a list endpoint).
 Auth is delegated to google_auth.
 """
 
-import sys
+import logging
 from typing import Optional
 
 from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError,
 )
+
+logger = logging.getLogger("google.sheets_client")
 
 SPREADSHEET_MIME = "application/vnd.google-apps.spreadsheet"
 
@@ -35,11 +37,11 @@ class SheetsClient:
             return cls(service=service)
         except GoogleAuthError as e:
             cls.last_error = f"Auth: {e}"
-            print(f"[google-plugin] SheetsClient auth failed: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] SheetsClient auth failed: %s", e)
             return None
         except Exception as e:
             cls.last_error = f"{type(e).__name__}: {e}"
-            print(f"[google-plugin] SheetsClient build failed: {type(e).__name__}: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] SheetsClient build failed: %s: %s", type(e).__name__, e)
             return None
 
     def create_spreadsheet(self, title: str, sheet_titles: Optional[list] = None) -> dict:
