@@ -47,7 +47,6 @@ def _ensure_deps() -> None:
                 init_script = Path(__file__).parent.parent / "initialize.py"
                 msg = f"[google-plugin] Missing deps {missing}; re-running {init_script}"
                 logger.warning(msg)
-                print(msg, file=sys.stderr, flush=True)
                 if init_script.exists():
                     subprocess.run(
                         [sys.executable, str(init_script)],
