@@ -3,13 +3,15 @@
 Handles all Calendar API operations. Auth is delegated to google_auth.
 """
 
-import sys
+import logging
 from datetime import timedelta
 from typing import Optional
 
 from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError,
 )
+
+logger = logging.getLogger("google.calendar_client")
 
 
 class CalendarClient:
@@ -30,11 +32,11 @@ class CalendarClient:
             return cls(service=service)
         except GoogleAuthError as e:
             cls.last_error = f"Auth: {e}"
-            print(f"[google-plugin] CalendarClient auth failed: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] CalendarClient auth failed: %s", e)
             return None
         except Exception as e:
             cls.last_error = f"{type(e).__name__}: {e}"
-            print(f"[google-plugin] CalendarClient build failed: {type(e).__name__}: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] CalendarClient build failed: %s: %s", type(e).__name__, e)
             return None
 
     # --- Calendar listing ---

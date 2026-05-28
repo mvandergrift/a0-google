@@ -4,12 +4,14 @@ Handles task listing, creation, completion, and deletion.
 Auth is delegated to google_auth.
 """
 
-import sys
+import logging
 from typing import Optional
 
 from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError,
 )
+
+logger = logging.getLogger("google.tasks_client")
 
 
 class TasksClient:
@@ -30,11 +32,11 @@ class TasksClient:
             return cls(service=service)
         except GoogleAuthError as e:
             cls.last_error = f"Auth: {e}"
-            print(f"[google-plugin] TasksClient auth failed: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] TasksClient auth failed: %s", e)
             return None
         except Exception as e:
             cls.last_error = f"{type(e).__name__}: {e}"
-            print(f"[google-plugin] TasksClient build failed: {type(e).__name__}: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] TasksClient build failed: %s: %s", type(e).__name__, e)
             return None
 
     def list_task_lists(self, max_results: int = 20) -> list:

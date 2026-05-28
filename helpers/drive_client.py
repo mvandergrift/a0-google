@@ -6,13 +6,15 @@ Auth is delegated to google_auth.
 
 import io
 import os
-import sys
+import logging
 from pathlib import Path
 from typing import Optional
 
 from usr.plugins.google.helpers.google_auth import (
     get_google_config, build_service, GoogleAuthError,
 )
+
+logger = logging.getLogger("google.drive_client")
 
 
 class DriveClient:
@@ -35,11 +37,11 @@ class DriveClient:
             return cls(service=service)
         except GoogleAuthError as e:
             cls.last_error = f"Auth: {e}"
-            print(f"[google-plugin] DriveClient auth failed: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] DriveClient auth failed: %s", e)
             return None
         except Exception as e:
             cls.last_error = f"{type(e).__name__}: {e}"
-            print(f"[google-plugin] DriveClient build failed: {type(e).__name__}: {e}", file=sys.stderr, flush=True)
+            logger.warning("[google-plugin] DriveClient build failed: %s: %s", type(e).__name__, e)
             return None
 
     def list_files(
